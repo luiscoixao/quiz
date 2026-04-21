@@ -1,0 +1,15 @@
+{
+  "name": "Quiz Histoire S1",
+  "short_name": "Quiz S1",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#08111f",
+  "theme_color": "#0f172a",
+  "icons": [
+    {
+      "src": "icon_quiz_histoire.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
