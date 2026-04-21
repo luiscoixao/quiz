@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>QUIZZ</title>
+  <meta name="theme-color" content="#0f172a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="QUIZZ" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="icon_quizz.png" />
+  <link rel="icon" type="image/png" href="icon_quizz.png" />
+  <style>
+    :root{--bg1:#08111f;--bg2:#0f1f3c;--card:rgba(255,255,255,.1);--line:rgba(255,255,255,.12);--text:#f8fafc;--muted:#cbd5e1;--shadow:0 18px 45px rgba(0,0,0,.32);--radius:24px}
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    html,body{margin:0;padding:0;min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;color:var(--text);background:radial-gradient(circle at top,#1e3a8a 0%,var(--bg2) 35%,var(--bg1) 100%)}
+    body{padding:calc(18px + env(safe-area-inset-top)) 16px calc(28px + env(safe-area-inset-bottom))}
+    .app{max-width:1100px;margin:0 auto}
+    .hero{background:linear-gradient(135deg,rgba(96,165,250,.18),rgba(167,139,250,.16));backdrop-filter:blur(14px);border:1px solid var(--line);border-radius:32px;padding:22px;box-shadow:var(--shadow)}
+    .title{font-size:clamp(30px,6vw,52px);font-weight:900;letter-spacing:-.04em;line-height:.95;margin:0}
+    .grid{display:grid;grid-template-columns:1.15fr .85fr;gap:16px;margin-top:16px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);backdrop-filter:blur(14px);box-shadow:var(--shadow)}
+    .section{padding:18px}
+    .section h2{margin:0 0 14px;font-size:19px;letter-spacing:-.02em}
+    .chips{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+    .chip{border:none;background:rgba(255,255,255,.09);color:var(--text);padding:14px 16px;border-radius:18px;font-size:15px;font-weight:800;cursor:pointer;border:1px solid transparent;text-align:left}
+    .chip.active{background:linear-gradient(135deg,rgba(96,165,250,.28),rgba(167,139,250,.24));border-color:rgba(255,255,255,.16)}
+    .controls{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+    button,.fileLabel{appearance:none;border:none;border-radius:18px;padding:14px 16px;font-size:15px;font-weight:800;cursor:pointer}
+    .primary{background:linear-gradient(135deg,#60a5fa,#818cf8);color:white}
+    .secondary{background:rgba(255,255,255,.08);color:var(--text);border:1px solid var(--line)}
+    .danger{background:rgba(239,68,68,.15);color:#fecaca;border:1px solid rgba(239,68,68,.25)}
+    .fileLabel input{display:none}
+    .row{display:flex;gap:12px;flex-wrap:wrap}
+    .stat{flex:1 1 140px;background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:20px;padding:14px}
+    .stat .label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+    .stat .value{margin-top:4px;font-size:28px;font-weight:900;letter-spacing:-.04em}
+    .quizWrap,.sheetView{display:none;margin-top:16px}
+    .quizTop,.sheetTop{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:12px;flex-wrap:wrap}
+    .progressWrap{height:12px;background:rgba(255,255,255,.08);border-radius:999px;overflow:hidden;border:1px solid var(--line)}
+    .progressBar{height:100%;width:0;background:linear-gradient(90deg,#60a5fa,#a78bfa);transition:.25s width}
+    .questionCard,.sheetCard{padding:20px}
+    .meta{font-size:13px;color:var(--muted);margin-bottom:12px}
+    .question{font-size:27px;line-height:1.15;font-weight:900;letter-spacing:-.03em;margin:0 0 16px}
+    .answers{display:grid;gap:10px}
+    .answer{width:100%;text-align:left;background:rgba(255,255,255,.07);color:var(--text);border:1px solid var(--line);border-radius:18px;padding:15px 16px;font-size:16px;font-weight:700}
+    .answer.correct{background:rgba(34,197,94,.18);border-color:rgba(34,197,94,.45)}
+    .answer.wrong{background:rgba(239,68,68,.18);border-color:rgba(239,68,68,.45)}
+    .explain{display:none;margin-top:14px;padding:14px;border-radius:18px;background:rgba(255,255,255,.06);border:1px solid var(--line);color:var(--muted);font-size:15px;line-height:1.45}
+    .list{display:grid;gap:10px}
+    .item{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:12px 14px;border-radius:18px;background:rgba(255,255,255,.06);border:1px solid var(--line)}
+    .item small{color:var(--muted);display:block;margin-top:2px}
+    textarea{width:100%;min-height:180px;background:rgba(6,11,22,.55);color:var(--text);border:1px solid var(--line);border-radius:18px;padding:14px;font:14px/1.45 ui-monospace,SFMono-Regular,Menlo,monospace;resize:vertical}
+    .muted{color:var(--muted);font-size:14px;line-height:1.45}.hidden{display:none!important}
+    .sheetCard h3{margin:0 0 8px;font-size:28px;letter-spacing:-.03em}.sheetCard h4{margin:18px 0 10px;font-size:17px;letter-spacing:-.02em}
+    .sheetLead{color:var(--muted);font-size:15px;line-height:1.5;margin:0 0 16px}
+    .sheetBlocks{display:grid;gap:12px}.sheetBlock{background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:20px;padding:16px}
+    .sheetBlock ul{margin:0;padding-left:18px;display:grid;gap:8px}.sheetBlock li{line-height:1.45}
+    .sheetGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.badgeRow{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+    .badge{display:inline-flex;align-items:center;gap:6px;padding:8px 10px;background:rgba(255,255,255,.07);border:1px solid var(--line);border-radius:999px;font-size:13px;font-weight:700;color:var(--text)}
+    @media (max-width:860px){.grid{grid-template-columns:1fr}.question{font-size:23px}.sheetGrid,.chips{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <section class="hero">
+      <h1 class="title">QUIZZ</h1>
+    </section>
+
+    <div class="grid">
+      <section class="card section">
+        <h2>Matières du deuxième semestre</h2>
+        <div id="subjectChips" class="chips"></div>
+
+        <div class="controls">
+          <button id="openSheetBtn" class="secondary">Ouvrir la fiche</button>
+          <button id="startBtn" class="primary">Commencer le quiz</button>
+          <button id="reviewBtn" class="secondary">Mode révision</button>
+          <button id="shuffleBtn" class="secondary">Mélanger questions</button>
+        </div>
+
+        <div class="row" style="margin-top:14px">
+          <div class="stat"><div class="label">Questions</div><div id="questionsCount" class="value">0</div></div>
+          <div class="stat"><div class="label">Meilleur score</div><div id="bestScore" class="value">0%</div></div>
+          <div class="stat"><div class="label">Dernier score</div><div id="lastScore" class="value">0%</div></div>
+        </div>
+
+        <div id="sheetView" class="sheetView">
+          <div class="sheetTop">
+            <div style="font-weight:800" id="sheetTitleTop">Fiche de révision</div>
+            <button id="closeSheetBtn" class="danger">Fermer la fiche</button>
+          </div>
+          <div class="card sheetCard"><div id="sheetContent"></div></div>
+        </div>
+
+        <div id="quizWrap" class="quizWrap">
+          <div class="quizTop">
+            <div style="font-weight:800" id="progressText">Question 1/1</div>
+            <button id="quitBtn" class="danger">Quitter</button>
+          </div>
+          <div class="progressWrap"><div id="progressBar" class="progressBar"></div></div>
+          <div class="card questionCard" style="margin-top:14px">
+            <div id="questionMeta" class="meta"></div>
+            <h3 id="questionText" class="question"></h3>
+            <div id="answers" class="answers"></div>
+            <div id="explain" class="explain"></div>
+            <div class="controls" style="margin-top:14px"><button id="nextBtn" class="primary hidden">Question suivante</button></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card section">
+        <h2>Personnaliser les questions</h2>
+        <p class="muted">Le fichier JSON peut être importé directement. Les fiches détaillées restent intégrées dans l’appli.</p>
+        <div class="controls">
+          <label class="fileLabel secondary">Importer un JSON<input id="importFile" type="file" accept="application/json" /></label>
+          <button id="exportBtn" class="secondary">Exporter la base</button>
+          <button id="resetBtn" class="danger">Réinitialiser les scores</button>
+        </div>
+        <p class="muted" style="margin-top:16px">Format attendu :</p>
+        <textarea id="jsonPreview" spellcheck="false"></textarea>
+        <div class="controls"><button id="applyJsonBtn" class="primary">Appliquer ce JSON</button></div>
+        <h2 style="margin-top:20px">Résultats par matière</h2>
+        <div id="resultsList" class="list"></div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const DEFAULT_SHEETS = {
+  "contemporaine": {
+    "lead": "Repères essentiels de l’époque contemporaine, de 1789 à 1914.",
+    "objectif": [
+      "Situer les grandes ruptures politiques.",
+      "Comprendre les transformations économiques et sociales.",
+      "Identifier les régimes du XIXe siècle."
+    ],
+    "reperes": [
+      "1789",
+      "1799",
+      "1804",
+      "1815",
+      "1848",
+      "1870",
+      "1914"
+    ],
+    "notions": [
+      "Nation",
+      "Révolution",
+      "Industrialisation",
+      "Libéralisme",
+      "République"
+    ],
+    "plan": [
+      "Révolution et Empire",
+      "Restaurations et révolutions",
+      "Industrialisation",
+      "États et nations"
+    ],
+    "pieges": [
+      "Ne pas confondre dates symboliques et évolutions longues.",
+      "Ne pas réduire le XIXe siècle à une simple succession de régimes."
+    ],
+    "savoirFaire": [
+      "Situer un régime.",
+      "Relier économie et société."
+    ]
+  },
+  "mondecontemporain": {
+    "lead": "Repères essentiels du XXe siècle : guerres mondiales, guerre froide, décolonisation et Europe.",
+    "objectif": [
+      "Maîtriser les grandes dates.",
+      "Comprendre les affrontements idéologiques.",
+      "Identifier les grands acteurs du monde contemporain."
+    ],
+    "reperes": [
+      "1914-1918",
+      "1917",
+      "1929",
+      "1939-1945",
+      "1947",
+      "1957",
+      "1989"
+    ],
+    "notions": [
+      "Totalitarisme",
+      "Guerre froide",
+      "Décolonisation",
+      "CEE",
+      "Bipolarisation"
+    ],
+    "plan": [
+      "Guerres mondiales",
+      "Régimes totalitaires",
+      "Guerre froide",
+      "Construction européenne"
+    ],
+    "pieges": [
+      "Ne pas mélanger guerre froide et Seconde Guerre mondiale.",
+      "Toujours distinguer chronologie mondiale et européenne."
+    ],
+    "savoirFaire": [
+      "Comparer deux systèmes idéologiques.",
+      "Expliquer la bipolarisation."
+    ]
+  },
+  "histoirepolitique": {
+    "lead": "Notions centrales de l’histoire politique moderne et contemporaine.",
+    "objectif": [
+      "Comprendre les grands types de régimes.",
+      "Maîtriser constitution, souveraineté et citoyenneté.",
+      "Identifier les grands courants politiques."
+    ],
+    "reperes": [
+      "1789",
+      "1848",
+      "1875",
+      "XXe siècle"
+    ],
+    "notions": [
+      "Constitution",
+      "Suffrage",
+      "Séparation des pouvoirs",
+      "Nation",
+      "Démocratie libérale"
+    ],
+    "plan": [
+      "Régimes constitutionnels",
+      "Citoyenneté",
+      "Républiques et empires",
+      "Crises politiques"
+    ],
+    "pieges": [
+      "Ne pas confondre démocratie et suffrage universel seul.",
+      "Toujours définir les notions."
+    ],
+    "savoirFaire": [
+      "Définir un régime.",
+      "Comparer monarchie, empire et république."
+    ]
+  },
+  "methodologies2": {
+    "lead": "Bases méthodologiques utiles pour réussir les partiels et rattrapages du second semestre.",
+    "objectif": [
+      "Faire une introduction claire.",
+      "Construire un plan équilibré.",
+      "Analyser un document sans paraphraser."
+    ],
+    "reperes": [
+      "Lire le sujet",
+      "Définir les termes",
+      "Formuler une problématique",
+      "Annoncer le plan",
+      "Conclure proprement"
+    ],
+    "notions": [
+      "Problématique",
+      "Annonce du plan",
+      "Transition",
+      "Contextualisation",
+      "Argumentation"
+    ],
+    "plan": [
+      "Analyser le sujet",
+      "Organiser le brouillon",
+      "Rédiger",
+      "Relire"
+    ],
+    "pieges": [
+      "Éviter la récitation brute.",
+      "Éviter la paraphrase.",
+      "Éviter les parties déséquilibrées."
+    ],
+    "savoirFaire": [
+      "Faire un plan en 10 minutes.",
+      "Présenter un document.",
+      "Illustrer avec des exemples."
+    ]
+  }
+};
+    const DEFAULT_DATA = {
+  "appTitle": "QUIZZ",
+  "subjects": [
+    {
+      "id": "contemporaine",
+      "name": "Histoire contemporaine",
+      "color": "#60a5fa",
+      "questions": [
+        {
+          "chapter": "Révolution française",
+          "difficulty": "facile",
+          "question": "En quelle année débute la Révolution française ?",
+          "answers": [
+            "1776",
+            "1789",
+            "1792",
+            "1815"
+          ],
+          "correctIndex": 1,
+          "explanation": "La Révolution française débute en 1789."
+        },
+        {
+          "chapter": "Révolution française",
+          "difficulty": "facile",
+          "question": "Quel événement symbolise le début de la Révolution ?",
+          "answers": [
+            "La prise de la Bastille",
+            "Le sacre de Napoléon",
+            "La chute de Robespierre",
+            "Le congrès de Vienne"
+          ],
+          "correctIndex": 0,
+          "explanation": "La prise de la Bastille est l’événement symbolique du début de la Révolution."
+        },
+        {
+          "chapter": "Empire",
+          "difficulty": "moyen",
+          "question": "En quelle année Napoléon devient-il empereur ?",
+          "answers": [
+            "1799",
+            "1802",
+            "1804",
+            "1812"
+          ],
+          "correctIndex": 2,
+          "explanation": "Napoléon devient empereur en 1804."
+        },
+        {
+          "chapter": "Empire",
+          "difficulty": "moyen",
+          "question": "Quelle bataille marque la défaite définitive de Napoléon ?",
+          "answers": [
+            "Austerlitz",
+            "Waterloo",
+            "Leipzig",
+            "Iéna"
+          ],
+          "correctIndex": 1,
+          "explanation": "Waterloo marque sa défaite définitive."
+        },
+        {
+          "chapter": "Industrialisation",
+          "difficulty": "moyen",
+          "question": "Dans quel pays commence la révolution industrielle ?",
+          "answers": [
+            "France",
+            "Allemagne",
+            "Royaume-Uni",
+            "Italie"
+          ],
+          "correctIndex": 2,
+          "explanation": "Elle commence au Royaume-Uni."
+        },
+        {
+          "chapter": "Industrialisation",
+          "difficulty": "moyen",
+          "question": "Quel secteur est au cœur de la première révolution industrielle ?",
+          "answers": [
+            "Automobile",
+            "Textile",
+            "Aéronautique",
+            "Télécommunications"
+          ],
+          "correctIndex": 1,
+          "explanation": "Le textile est central."
+        },
+        {
+          "chapter": "Nationalités",
+          "difficulty": "moyen",
+          "question": "Quel congrès redessine l’Europe après Napoléon ?",
+          "answers": [
+            "Le congrès de Berlin",
+            "Le congrès de Vienne",
+            "Le traité de Versailles",
+            "Le traité de Rome"
+          ],
+          "correctIndex": 1,
+          "explanation": "Le congrès de Vienne redessine l’Europe."
+        },
+        {
+          "chapter": "XIXe siècle",
+          "difficulty": "facile",
+          "question": "Quelle année correspond au 'Printemps des peuples' ?",
+          "answers": [
+            "1815",
+            "1830",
+            "1848",
+            "1870"
+          ],
+          "correctIndex": 2,
+          "explanation": "1848."
+        },
+        {
+          "chapter": "France politique",
+          "difficulty": "moyen",
+          "question": "Quel régime suit le Second Empire en France ?",
+          "answers": [
+            "La Première République",
+            "La Troisième République",
+            "La Restauration",
+            "La Quatrième République"
+          ],
+          "correctIndex": 1,
+          "explanation": "La Troisième République."
+        },
+        {
+          "chapter": "Première Guerre mondiale",
+          "difficulty": "facile",
+          "question": "En quelle année commence la Première Guerre mondiale ?",
+          "answers": [
+            "1912",
+            "1914",
+            "1916",
+            "1918"
+          ],
+          "correctIndex": 1,
+          "explanation": "1914."
+        }
+      ]
+    },
+    {
+      "id": "mondecontemporain",
+      "name": "Monde contemporain",
+      "color": "#a78bfa",
+      "questions": [
+        {
+          "chapter": "Première Guerre mondiale",
+          "difficulty": "facile",
+          "question": "Quel traité met officiellement fin à la guerre avec l’Allemagne ?",
+          "answers": [
+            "Traité de Rome",
+            "Traité de Versailles",
+            "Traité de Maastricht",
+            "Traité de Tordesillas"
+          ],
+          "correctIndex": 1,
+          "explanation": "Le traité de Versailles est signé en 1919."
+        },
+        {
+          "chapter": "Russie",
+          "difficulty": "moyen",
+          "question": "En quelle année a lieu la révolution bolchevique ?",
+          "answers": [
+            "1905",
+            "1917",
+            "1924",
+            "1939"
+          ],
+          "correctIndex": 1,
+          "explanation": "1917."
+        },
+        {
+          "chapter": "Entre-deux-guerres",
+          "difficulty": "moyen",
+          "question": "Quelle crise économique éclate en 1929 ?",
+          "answers": [
+            "La crise des tulipes",
+            "La Grande Dépression",
+            "Le krach de 1873",
+            "La crise pétrolière"
+          ],
+          "correctIndex": 1,
+          "explanation": "La Grande Dépression."
+        },
+        {
+          "chapter": "Régimes totalitaires",
+          "difficulty": "moyen",
+          "question": "Qui dirige l’URSS à partir de la fin des années 1920 ?",
+          "answers": [
+            "Lénine",
+            "Staline",
+            "Khrouchtchev",
+            "Trotski"
+          ],
+          "correctIndex": 1,
+          "explanation": "Staline."
+        },
+        {
+          "chapter": "Seconde Guerre mondiale",
+          "difficulty": "facile",
+          "question": "En quelle année débute la Seconde Guerre mondiale en Europe ?",
+          "answers": [
+            "1936",
+            "1938",
+            "1939",
+            "1941"
+          ],
+          "correctIndex": 2,
+          "explanation": "1939."
+        },
+        {
+          "chapter": "Seconde Guerre mondiale",
+          "difficulty": "moyen",
+          "question": "Quel événement marque l’entrée en guerre des États-Unis ?",
+          "answers": [
+            "Pearl Harbor",
+            "Stalingrad",
+            "Yalta",
+            "Midway"
+          ],
+          "correctIndex": 0,
+          "explanation": "Pearl Harbor."
+        },
+        {
+          "chapter": "Guerre froide",
+          "difficulty": "moyen",
+          "question": "Quel mur devient le symbole de la division du monde après 1961 ?",
+          "answers": [
+            "Mur d’Hadrien",
+            "Mur de Berlin",
+            "Mur des Lamentations",
+            "Mur de l’Atlantique"
+          ],
+          "correctIndex": 1,
+          "explanation": "Le mur de Berlin."
+        },
+        {
+          "chapter": "Décolonisation",
+          "difficulty": "moyen",
+          "question": "Quel pays devient indépendant en 1947 après la domination britannique ?",
+          "answers": [
+            "Algérie",
+            "Inde",
+            "Vietnam",
+            "Égypte"
+          ],
+          "correctIndex": 1,
+          "explanation": "L’Inde."
+        },
+        {
+          "chapter": "Europe",
+          "difficulty": "moyen",
+          "question": "Quel traité fonde la CEE en 1957 ?",
+          "answers": [
+            "Traité de Lisbonne",
+            "Traité de Rome",
+            "Traité de Paris",
+            "Traité de Nice"
+          ],
+          "correctIndex": 1,
+          "explanation": "Le traité de Rome."
+        },
+        {
+          "chapter": "Fin du XXe siècle",
+          "difficulty": "facile",
+          "question": "En quelle année le mur de Berlin tombe-t-il ?",
+          "answers": [
+            "1987",
+            "1989",
+            "1991",
+            "1995"
+          ],
+          "correctIndex": 1,
+          "explanation": "1989."
+        }
+      ]
+    },
+    {
+      "id": "histoirepolitique",
+      "name": "Histoire politique",
+      "color": "#f59e0b",
+      "questions": [
+        {
+          "chapter": "Institutions",
+          "difficulty": "facile",
+          "question": "Qu’est-ce qu’une constitution ?",
+          "answers": [
+            "Une loi fiscale",
+            "Un texte qui organise les pouvoirs",
+            "Un traité de paix",
+            "Un code civil"
+          ],
+          "correctIndex": 1,
+          "explanation": "Une constitution organise les pouvoirs."
+        },
+        {
+          "chapter": "Souveraineté",
+          "difficulty": "moyen",
+          "question": "Quel auteur est souvent associé à la souveraineté populaire ?",
+          "answers": [
+            "Rousseau",
+            "Bossuet",
+            "Machiavel",
+            "Metternich"
+          ],
+          "correctIndex": 0,
+          "explanation": "Rousseau."
+        },
+        {
+          "chapter": "Régimes",
+          "difficulty": "facile",
+          "question": "Dans une monarchie constitutionnelle, le pouvoir du roi est-il limité ?",
+          "answers": [
+            "Oui",
+            "Non",
+            "Toujours absolu",
+            "Supprimé"
+          ],
+          "correctIndex": 0,
+          "explanation": "Oui, par la constitution."
+        },
+        {
+          "chapter": "Citoyenneté",
+          "difficulty": "moyen",
+          "question": "Le suffrage universel masculin en France est établi durablement en :",
+          "answers": [
+            "1789",
+            "1815",
+            "1848",
+            "1875"
+          ],
+          "correctIndex": 2,
+          "explanation": "1848."
+        },
+        {
+          "chapter": "Républiques",
+          "difficulty": "moyen",
+          "question": "Quel régime français s’installe durablement après 1870 ?",
+          "answers": [
+            "Le Consulat",
+            "La Troisième République",
+            "La Restauration",
+            "Le Directoire"
+          ],
+          "correctIndex": 1,
+          "explanation": "La Troisième République."
+        },
+        {
+          "chapter": "Parlementarisme",
+          "difficulty": "moyen",
+          "question": "Dans un régime parlementaire, le gouvernement est responsable devant :",
+          "answers": [
+            "L’armée",
+            "Le Parlement",
+            "Le roi seulement",
+            "Les juges"
+          ],
+          "correctIndex": 1,
+          "explanation": "Devant le Parlement."
+        },
+        {
+          "chapter": "Libéralisme",
+          "difficulty": "moyen",
+          "question": "Le libéralisme politique défend d’abord :",
+          "answers": [
+            "Le parti unique",
+            "La séparation des pouvoirs",
+            "La dictature militaire",
+            "La suppression des élections"
+          ],
+          "correctIndex": 1,
+          "explanation": "La séparation des pouvoirs."
+        },
+        {
+          "chapter": "Nationalisme",
+          "difficulty": "moyen",
+          "question": "Au XIXe siècle, le nationalisme vise souvent :",
+          "answers": [
+            "La disparition des États",
+            "L’unité politique d’un peuple",
+            "Le retour à la féodalité",
+            "La fin des constitutions"
+          ],
+          "correctIndex": 1,
+          "explanation": "L’unité politique d’un peuple."
+        },
+        {
+          "chapter": "Totalitarismes",
+          "difficulty": "moyen",
+          "question": "Quel trait caractérise un régime totalitaire ?",
+          "answers": [
+            "Pluralisme politique",
+            "Parti unique",
+            "Séparation stricte des pouvoirs",
+            "Neutralité de l’État"
+          ],
+          "correctIndex": 1,
+          "explanation": "Le parti unique."
+        },
+        {
+          "chapter": "Démocratie",
+          "difficulty": "facile",
+          "question": "Dans une démocratie libérale, les élections doivent être :",
+          "answers": [
+            "Héréditaires",
+            "Libres",
+            "Militaires",
+            "Censitaires uniquement"
+          ],
+          "correctIndex": 1,
+          "explanation": "Libres."
+        }
+      ]
+    },
+    {
+      "id": "methodologies2",
+      "name": "Méthodologie",
+      "color": "#22c55e",
+      "questions": [
+        {
+          "chapter": "Dissertation",
+          "difficulty": "facile",
+          "question": "Quel élément doit apparaître dans l’introduction ?",
+          "answers": [
+            "Une problématique",
+            "Une conclusion",
+            "Une bibliographie complète",
+            "Aucun plan"
+          ],
+          "correctIndex": 0,
+          "explanation": "La problématique."
+        },
+        {
+          "chapter": "Dissertation",
+          "difficulty": "facile",
+          "question": "Avant de rédiger, il faut d’abord :",
+          "answers": [
+            "Écrire au hasard",
+            "Faire un brouillon",
+            "Recopier le sujet",
+            "Sauter l’introduction"
+          ],
+          "correctIndex": 1,
+          "explanation": "Faire un brouillon."
+        },
+        {
+          "chapter": "Plan",
+          "difficulty": "moyen",
+          "question": "Un bon plan doit être :",
+          "answers": [
+            "Déséquilibré",
+            "Logique",
+            "Très long mais flou",
+            "Sans rapport avec le sujet"
+          ],
+          "correctIndex": 1,
+          "explanation": "Il doit être logique."
+        },
+        {
+          "chapter": "Commentaire",
+          "difficulty": "moyen",
+          "question": "Dans un commentaire de document, il faut éviter :",
+          "answers": [
+            "L’analyse",
+            "La contextualisation",
+            "La paraphrase",
+            "La présentation du document"
+          ],
+          "correctIndex": 2,
+          "explanation": "La paraphrase."
+        },
+        {
+          "chapter": "Document",
+          "difficulty": "facile",
+          "question": "Présenter un document, c’est notamment indiquer :",
+          "answers": [
+            "Sa nature",
+            "La couleur de la copie",
+            "Son prix",
+            "Le nom du correcteur"
+          ],
+          "correctIndex": 0,
+          "explanation": "Sa nature."
+        },
+        {
+          "chapter": "Sujet",
+          "difficulty": "moyen",
+          "question": "Analyser un sujet, c’est d’abord :",
+          "answers": [
+            "Définir les termes",
+            "Chercher une citation au hasard",
+            "Écrire la conclusion",
+            "Apprendre par cœur"
+          ],
+          "correctIndex": 0,
+          "explanation": "Définir les termes."
+        },
+        {
+          "chapter": "Rédaction",
+          "difficulty": "facile",
+          "question": "Chaque grande partie doit :",
+          "answers": [
+            "Répondre à la question",
+            "Être hors sujet",
+            "Être purement descriptive",
+            "Supprimer les exemples"
+          ],
+          "correctIndex": 0,
+          "explanation": "Répondre à la question."
+        },
+        {
+          "chapter": "Exemples",
+          "difficulty": "moyen",
+          "question": "Un exemple en dissertation sert à :",
+          "answers": [
+            "Décorer la copie",
+            "Appuyer une idée",
+            "Allonger la copie",
+            "Éviter l’argumentation"
+          ],
+          "correctIndex": 1,
+          "explanation": "Appuyer une idée."
+        },
+        {
+          "chapter": "Conclusion",
+          "difficulty": "facile",
+          "question": "La conclusion doit :",
+          "answers": [
+            "Ouvrir un nouveau développement",
+            "Répondre à la problématique",
+            "Ignorer le sujet",
+            "Être plus longue que tout le devoir"
+          ],
+          "correctIndex": 1,
+          "explanation": "Répondre à la problématique."
+        },
+        {
+          "chapter": "Temps",
+          "difficulty": "moyen",
+          "question": "Pendant l’examen, il faut garder du temps pour :",
+          "answers": [
+            "Relire",
+            "Dessiner",
+            "Changer de sujet",
+            "Rien"
+          ],
+          "correctIndex": 0,
+          "explanation": "Relire."
+        }
+      ]
+    }
+  ]
+};
+    const state = {data:null,selectedSubjectId:null,quizQuestions:[],currentIndex:0,score:0,reviewMode:false,awaitingNext:false,shuffled:false};
+    const $ = (id) => document.getElementById(id);
+    const STORAGE_DATA = 'quiz-histoire-s2-data';
+    const STORAGE_SCORES = 'quiz-histoire-s2-scores';
+
+    function normalizeId(id=''){ return String(id).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,''); }
+    function resolveSheetKey(subject){ const raw = normalizeId(subject?.id || subject?.name || ''); return DEFAULT_SHEETS[raw] ? raw : null; }
+    function loadData(){ try{ const saved = localStorage.getItem(STORAGE_DATA); state.data = saved ? JSON.parse(saved) : null; }catch(e){ state.data = null; } if(!state.data || !Array.isArray(state.data.subjects) || !state.data.subjects.length) state.data = DEFAULT_DATA; state.selectedSubjectId = state.data.subjects[0]?.id || null; $('jsonPreview').value = JSON.stringify(state.data, null, 2); }
+    function saveData(){ localStorage.setItem(STORAGE_DATA, JSON.stringify(state.data)); $('jsonPreview').value = JSON.stringify(state.data, null, 2); }
+    function getScores(){ try{return JSON.parse(localStorage.getItem(STORAGE_SCORES) || '{}')}catch(e){return {}} }
+    function saveScores(scores){ localStorage.setItem(STORAGE_SCORES, JSON.stringify(scores)); }
+    function currentSubject(){ return state.data.subjects.find(s => s.id === state.selectedSubjectId) || state.data.subjects[0]; }
+
+    function renderSubjects(){
+      const box = $('subjectChips'); box.innerHTML = '';
+      state.data.subjects.forEach(s => {
+        const btn = document.createElement('button');
+        btn.className = 'chip' + (s.id === state.selectedSubjectId ? ' active' : '');
+        btn.innerHTML = `<span>${s.name}</span>`;
+        btn.onclick = () => { state.selectedSubjectId = s.id; renderSubjects(); updateStats(); openSheet(); };
+        box.appendChild(btn);
+      });
+    }
+
+    function updateStats(){
+      const subject = currentSubject(); const scores = getScores(); const result = scores[subject.id] || {best:0,last:0,plays:0};
+      $('questionsCount').textContent = subject.questions?.length || 0;
+      $('bestScore').textContent = `${Math.round(result.best || 0)}%`;
+      $('lastScore').textContent = `${Math.round(result.last || 0)}%`;
+      renderResults();
+    }
+
+    function renderResults(){
+      const list = $('resultsList'); const scores = getScores(); list.innerHTML = '';
+      state.data.subjects.forEach(s => {
+        const r = scores[s.id] || {best:0,last:0,plays:0};
+        const div = document.createElement('div'); div.className = 'item';
+        div.innerHTML = `<div><strong>${s.name}</strong><small>${s.questions?.length || 0} questions · ${r.plays || 0} essai(s)</small></div><div><strong>${Math.round(r.best || 0)}%</strong></div>`;
+        list.appendChild(div);
+      });
+    }
+
+    function renderList(title, arr){ return `<div class="sheetBlock"><h4>${title}</h4><ul>${(arr||[]).map(v => `<li>${v}</li>`).join('')}</ul></div>`; }
+
+    function openSheet(){
+      const subject = currentSubject(); const key = resolveSheetKey(subject); const sheet = key ? DEFAULT_SHEETS[key] : null;
+      $('sheetView').style.display = 'block'; $('quizWrap').style.display = 'none'; $('sheetTitleTop').textContent = subject?.name || 'Fiche de révision';
+      if(!sheet){ $('sheetContent').innerHTML = `<h3>${subject?.name || 'Matière'}</h3>`; return; }
+      $('sheetContent').innerHTML = `
+        <h3>${subject.name}</h3>
+        <p class="sheetLead">${sheet.lead}</p>
+        <div class="badgeRow">
+          <span class="badge">Fiche active</span>
+          <span class="badge">Repères essentiels</span>
+          <span class="badge">Méthode de révision</span>
+        </div>
+        <div class="sheetBlocks" style="margin-top:14px">
+          ${renderList('Objectifs à maîtriser', sheet.objectif)}
+          <div class="sheetGrid">
+            ${renderList('Repères chronologiques', sheet.reperes)}
+            ${renderList('Notions à connaître', sheet.notions)}
+          </div>
+          ${renderList('Plan de révision conseillé', sheet.plan)}
+          <div class="sheetGrid">
+            ${renderList('Pièges à éviter', sheet.pieges)}
+            ${renderList('Savoir-faire attendus', sheet.savoirFaire)}
+          </div>
+        </div>`;
+    }
+
+    function closeSheet(){ $('sheetView').style.display = 'none'; }
+    function shuffleArray(arr){ const a=[...(arr||[])]; for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]];} return a; }
+
+    function startQuiz(reviewMode=false){
+      const subject = currentSubject();
+      if(!subject?.questions?.length){ alert('Aucune question dans cette matière.'); return; }
+      state.reviewMode = reviewMode; state.currentIndex = 0; state.score = 0; state.awaitingNext = false;
+      state.quizQuestions = state.shuffled ? shuffleArray(subject.questions) : [...subject.questions];
+      $('sheetView').style.display = 'none'; $('quizWrap').style.display = 'block'; renderQuestion();
+    }
+
+    function renderQuestion(){
+      const q = state.quizQuestions[state.currentIndex]; if(!q){ finishQuiz(); return; }
+      $('progressText').textContent = `Question ${state.currentIndex + 1}/${state.quizQuestions.length}`;
+      $('progressBar').style.width = `${(state.currentIndex / state.quizQuestions.length) * 100}%`;
+      $('questionMeta').textContent = `${currentSubject().name} · ${q.chapter || 'Cours'} · ${q.difficulty || 'niveau libre'}`;
+      $('questionText').textContent = q.question; $('explain').style.display = 'none'; $('explain').textContent = q.explanation || '';
+      $('nextBtn').classList.add('hidden'); const answers = $('answers'); answers.innerHTML = '';
+      (q.answers || []).forEach((answer, idx) => {
+        const btn = document.createElement('button'); btn.className = 'answer'; btn.textContent = answer; btn.onclick = () => chooseAnswer(idx, btn); answers.appendChild(btn);
+      });
+    }
+
+    function chooseAnswer(index, clickedBtn){
+      if(state.awaitingNext) return; state.awaitingNext = true;
+      const q = state.quizQuestions[state.currentIndex]; const buttons = [...document.querySelectorAll('.answer')];
+      buttons.forEach((b,i) => { b.disabled = true; if(i === q.correctIndex) b.classList.add('correct'); });
+      if(index !== q.correctIndex) clickedBtn.classList.add('wrong'); else state.score++;
+      if(state.reviewMode || q.explanation) $('explain').style.display = 'block';
+      $('nextBtn').classList.remove('hidden');
+    }
+
+    function nextQuestion(){ state.currentIndex++; state.awaitingNext = false; $('progressBar').style.width = `${(state.currentIndex / state.quizQuestions.length) * 100}%`; renderQuestion(); }
+    function finishQuiz(){
+      const total = state.quizQuestions.length || 1; const percent = Math.round((state.score / total) * 100); const subject = currentSubject();
+      const scores = getScores(); const prev = scores[subject.id] || {best:0,last:0,plays:0};
+      scores[subject.id] = {best: Math.max(prev.best || 0, percent), last: percent, plays: (prev.plays || 0) + 1}; saveScores(scores); updateStats();
+      $('progressText').textContent = 'Terminé'; $('questionMeta').textContent = subject.name; $('questionText').textContent = `Score final : ${state.score}/${total} · ${percent}%`;
+      $('answers').innerHTML = ''; $('explain').style.display = 'block'; $('explain').textContent = percent >= 80 ? 'Très bon niveau.' : 'Refais ce quiz en mode révision puis reprends la fiche détaillée de la matière.'; $('nextBtn').classList.add('hidden'); $('progressBar').style.width = '100%';
+    }
+    function quitQuiz(){ $('quizWrap').style.display = 'none'; }
+
+    function applyJson(){
+      try{
+        const parsed = JSON.parse($('jsonPreview').value);
+        if(!parsed.subjects || !Array.isArray(parsed.subjects)) throw new Error('Format invalide');
+        state.data = parsed; state.selectedSubjectId = parsed.subjects[0]?.id || null; saveData(); renderSubjects(); updateStats(); openSheet(); alert('Nouvelle base appliquée.');
+      }catch(e){ alert('JSON invalide. Vérifiez la structure.'); }
+    }
+    function importJsonFile(file){ const reader = new FileReader(); reader.onload = () => { $('jsonPreview').value = reader.result; applyJson(); }; reader.readAsText(file, 'utf-8'); }
+    function exportJson(){ const blob = new Blob([JSON.stringify(state.data, null, 2)], {type:'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'quiz-histoire-s2-data.json'; a.click(); URL.revokeObjectURL(a.href); }
+    function resetScores(){ localStorage.removeItem(STORAGE_SCORES); updateStats(); alert('Scores réinitialisés.'); }
+
+    $('openSheetBtn').onclick = openSheet;
+    $('closeSheetBtn').onclick = closeSheet;
+    $('startBtn').onclick = () => startQuiz(false);
+    $('reviewBtn').onclick = () => startQuiz(true);
+    $('shuffleBtn').onclick = () => { state.shuffled = !state.shuffled; $('shuffleBtn').textContent = state.shuffled ? 'Mélange activé' : 'Mélanger questions'; $('shuffleBtn').classList.toggle('primary', state.shuffled); $('shuffleBtn').classList.toggle('secondary', !state.shuffled); };
+    $('nextBtn').onclick = nextQuestion; $('quitBtn').onclick = quitQuiz; $('applyJsonBtn').onclick = applyJson; $('exportBtn').onclick = exportJson; $('resetBtn').onclick = resetScores;
+    $('importFile').addEventListener('change', e => { const file = e.target.files?.[0]; if(file) importJsonFile(file); e.target.value = ''; });
+
+    loadData(); renderSubjects(); updateStats(); openSheet();
+  </script>
+</body>
+</html>
