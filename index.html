@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Quiz Histoire S1</title>
+  <title>QUIZZ</title>
   <meta name="theme-color" content="#0f172a" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="Quiz Histoire S1" />
+  <meta name="apple-mobile-web-app-title" content="QUIZZ" />
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="apple-touch-icon" href="icon_quiz_histoire.png" />
   <link rel="icon" type="image/png" href="icon_quiz_histoire.png" />
@@ -72,8 +72,7 @@
 <body>
   <div class="app">
     <section class="hero">
-      <h1 class="title">QUIZ<br>HISTOIRE S1</h1>
-      <p class="subtitle">Les boutons des matières sont actifs : un appui ouvre directement la fiche détaillée de la matière choisie, avec un accès séparé au quiz.</p>
+      <h1 class="title">QUIZZ</h1>
     </section>
 
     <div class="grid">
@@ -133,9 +132,7 @@
         <div id="resultsList" class="list"></div>
       </section>
     </div>
-
-    <p class="footerNote">Quiz et fiches de révision pour le premier semestre d’histoire.</p>
-  </div>
+</div>
 
   <script>
     const DEFAULT_SHEETS = {
@@ -178,13 +175,557 @@
     };
 
     const DEFAULT_DATA = {
-      appTitle: "Quiz Histoire S1",
+      appTitle: "QUIZZ",
       subjects: [
-        { id: "ancienne", name: "Histoire ancienne", color: "#60a5fa", questions: [] },
-        { id: "medievale", name: "Histoire médiévale", color: "#a78bfa", questions: [] },
-        { id: "moderne", name: "Histoire moderne", color: "#f59e0b", questions: [] },
-        { id: "methodologie", name: "Méthodologie", color: "#22c55e", questions: [] }
-      ]
+        {
+                "id": "ancienne",
+                "name": "Histoire ancienne",
+                "color": "#60a5fa",
+                "questions": [
+                        {
+                                "question": "Quel personnage fonde traditionnellement Rome selon la légende ?",
+                                "answers": [
+                                        "Rémus",
+                                        "Romulus",
+                                        "Cincinnatus",
+                                        "Auguste"
+                                ],
+                                "correctIndex": 1,
+                                "explanation": "La tradition romaine attribue la fondation de Rome à Romulus en 753 av. J.-C.",
+                                "chapter": "Naissance de Rome",
+                                "difficulty": "facile"
+                        },
+                        {
+                                "question": "Quelle date est traditionnellement retenue pour la fondation de Rome ?",
+                                "answers": [
+                                        "509 av. J.-C.",
+                                        "476 ap. J.-C.",
+                                        "753 av. J.-C.",
+                                        "27 av. J.-C."
+                                ],
+                                "correctIndex": 2,
+                                "explanation": "753 av. J.-C. est la date symbolique donnée par la tradition romaine.",
+                                "chapter": "Naissance de Rome",
+                                "difficulty": "facile"
+                        },
+                        {
+                                "question": "Quel organe joue un rôle central dans la République romaine ?",
+                                "answers": [
+                                        "Le Sénat",
+                                        "Le théâtre",
+                                        "Le cirque",
+                                        "L'armée seule"
+                                ],
+                                "correctIndex": 0,
+                                "explanation": "Le Sénat est une institution essentielle de la vie politique romaine.",
+                                "chapter": "République romaine",
+                                "difficulty": "facile"
+                        },
+                        {
+                                "question": "Qui sont les deux magistrats suprêmes élus chaque année sous la République romaine ?",
+                                "answers": [
+                                        "Les tribuns",
+                                        "Les censeurs",
+                                        "Les consuls",
+                                        "Les préteurs"
+                                ],
+                                "correctIndex": 2,
+                                "explanation": "Les consuls dirigent l'État pour un an et incarnent la collégialité du pouvoir.",
+                                "chapter": "République romaine",
+                                "difficulty": "moyen"
+                        },
+                        {
+                                "question": "Les guerres puniques opposent Rome à :",
+                                "answers": [
+                                        "Athènes",
+                                        "Sparte",
+                                        "Carthage",
+                                        "Alexandrie"
+                                ],
+                                "correctIndex": 2,
+                                "explanation": "Les guerres puniques opposent Rome à Carthage pour la domination de la Méditerranée occidentale.",
+                                "chapter": "Expansion romaine",
+                                "difficulty": "facile"
+                        },
+                        {
+                                "question": "Quel général carthaginois est célèbre pour avoir traversé les Alpes avec des éléphants ?",
+                                "answers": [
+                                        "Hamilcar",
+                                        "Hannibal",
+                                        "Scipion",
+                                        "Marius"
+                                ],
+                                "correctIndex": 1,
+                                "explanation": "Hannibal est célèbre pour sa campagne audacieuse contre Rome.",
+                                "chapter": "Guerres puniques",
+                                "difficulty": "facile"
+                        },
+                        {
+                                "question": "Quel titre reçoit Octave en 27 av. J.-C. ?",
+                                "answers": [
+                                        "César",
+                                        "Auguste",
+                                        "Consul à vie",
+                                        "Imperator unique"
+                                ],
+                                "correctIndex": 1,
+                                "explanation": "En 27 av. J.-C., Octave reçoit le titre d'Auguste, marquant le début du Principat.",
+                                "chapter": "Naissance de l'Empire",
+                                "difficulty": "moyen"
+                        },
+                        {
+                                "question": "Que désigne l'expression Pax Romana ?",
+                                "answers": [
+                                        "Une alliance avec les Perses",
+                                        "Une période de paix relative dans l'Empire",
+                                        "La fin des conquêtes grecques",
+                                        "Une réforme religieuse"
+                                ],
+                                "correctIndex": 1,
+                                "explanation": "La Pax Romana désigne une longue période de stabilité relative sous l'Empire.",
+                                "chapter": "Empire romain",
+                                "difficulty": "facile"
+                        },
+                        {
+                                "question": "Quel édit de 212 accorde largement la citoyenneté romaine ?",
+                                "answers": [
+                                        "L'édit de Milan",
+                                        "La Constitutio Antoniniana",
+                                        "L'édit de Thessalonique",
+                                        "La loi des Douze Tables"
+                                ],
+                                "correctIndex": 1,
+                                "explanation": "La Constitutio Antoniniana de Caracalla élargit la citoyenneté romaine à presque tous les hommes libres de l'Empire.",
+                                "chapter": "Citoyenneté romaine",
+                                "difficulty": "difficile"
+                        },
+                        {
+                                "question": "Quel empereur légalise le christianisme par l'édit de Milan en 313 ?",
+                                "answers": [
+                                        "Théodose",
+                                        "Néron",
+                                        "Constantin",
+                                        "Trajan"
+                                ],
+                                "correctIndex": 2,
+                                "explanation": "Constantin légalise le christianisme avec l'édit de Milan en 313.",
+                                "chapter": "Christianisation de l'Empire",
+                                "difficulty": "moyen"
+                        }
+                ]
+        },
+        {
+                "id": "medievale",
+                "name": "Histoire médiévale",
+                "color": "#a78bfa",
+                "questions": [
+                        {
+                                "question": "Quelle date marque traditionnellement la chute de l'Empire romain d'Occident ?",
+                                "answers": [
+                                        "395",
+                                        "410",
+                                        "476",
+                                        "622"
+                                ],
+                                "correctIndex": 2,
+                                "explanation": "476 est la date traditionnellement retenue pour la chute de l'Empire romain d'Occident.",
+                                "chapter": "Haut Moyen Âge",
+                                "difficulty": "facile"
+                        },
+                        {
+                                "question": "Quel roi franc est associé à sa conversion au christianisme ?",
+                                "answers": [
+                                        "Clovis",
+                                        "Dagobert",
+                                        "Charles Martel",
+                                        "Hugues Capet"
+                                ],
+                                "correctIndex": 0,
+                                "explanation": "Clovis est célèbre pour sa conversion, événement majeur de l'histoire franque.",
+                                "chapter": "Royaumes barbares",
+                                "difficulty": "facile"
+                        },
+                        {
+                                "question": "Qui est couronné empereur en 800 ?",
+                                "answers": [
+                                        "Pépin le Bref",
+                                        "Charlemagne",
+                                        "Otton Ier",
+                                        "Louis le Pieux"
+                                ],
+                                "correctIndex": 1,
+                                "explanation": "Charlemagne est couronné empereur à Rome en 800.",
+                                "chapter": "Empire carolingien",
+                                "difficulty": "facile"
+                        },
+                        {
+                                "question": "Quel traité partage l'Empire carolingien en 843 ?",
+                                "answers": [
+                                        "Verdun",
+                                        "Troyes",
+                                        "Paris",
+                                        "Worms"
+                                ],
+                                "correctIndex": 0,
+                                "explanation": "Le traité de Verdun partage l'Empire entre les héritiers de Louis le Pieux.",
+                                "chapter": "Empire carolingien",
+                                "difficulty": "facile"
+                        },
+                        {
+                                "question": "La féodalité repose principalement sur :",
+                                "answers": [
+                                        "Le suffrage universel",
+                                        "Des liens personnels de dépendance",
+                                        "Un État central très fort",
+                                        "L'égalité juridique"
+                                ],
+                                "correctIndex": 1,
+                                "explanation": "La féodalité s'appuie sur des rapports personnels de fidélité et de protection.",
+                                "chapter": "Société féodale",
+                                "difficulty": "moyen"
+                        },
+                        {
+                                "question": "Comment appelle-t-on la terre concédée par un seigneur à son vassal ?",
+                                "answers": [
+                                        "Le domaine",
+                                        "Le bénéfice ou fief",
+                                        "La paroisse",
+                                        "La tenure libre"
+                                ],
+                                "correctIndex": 1,
+                                "explanation": "Le fief est l'élément matériel de la relation vassalique.",
+                                "chapter": "Société féodale",
+                                "difficulty": "moyen"
+                        },
+                        {
+                                "question": "En quelle année débute traditionnellement la première croisade ?",
+                                "answers": [
+                                        "1054",
+                                        "1095",
+                                        "1096",
+                                        "1215"
+                                ],
+                                "correctIndex": 2,
+                                "explanation": "L'appel d'Urbain II date de 1095, mais la première croisade commence en 1096.",
+                                "chapter": "Chrétienté médiévale",
+                                "difficulty": "moyen"
+                        },
+                        {
+                                "question": "Quelle ville est reprise par les croisés en 1099 ?",
+                                "answers": [
+                                        "Jérusalem",
+                                        "Rome",
+                                        "Antioche",
+                                        "Constantinople"
+                                ],
+                                "correctIndex": 0,
+                                "explanation": "Jérusalem est prise par les croisés en 1099.",
+                                "chapter": "Croisades",
+                                "difficulty": "facile"
+                        },
+                        {
+                                "question": "Quel événement de 1214 renforce fortement la monarchie capétienne ?",
+                                "answers": [
+                                        "La bataille de Poitiers",
+                                        "La bataille de Bouvines",
+                                        "Le traité de Verdun",
+                                        "Le sacre de Reims"
+                                ],
+                                "correctIndex": 1,
+                                "explanation": "La victoire de Bouvines en 1214 consolide l'autorité de Philippe Auguste.",
+                                "chapter": "Monarchie capétienne",
+                                "difficulty": "moyen"
+                        },
+                        {
+                                "question": "Quelle grande épidémie frappe l'Europe à partir de 1347-1348 ?",
+                                "answers": [
+                                        "Le choléra",
+                                        "La peste noire",
+                                        "La variole",
+                                        "La lèpre"
+                                ],
+                                "correctIndex": 1,
+                                "explanation": "La peste noire provoque une crise démographique majeure au XIVe siècle.",
+                                "chapter": "Crises de la fin du Moyen Âge",
+                                "difficulty": "facile"
+                        }
+                ]
+        },
+        {
+                "id": "moderne",
+                "name": "Histoire moderne",
+                "color": "#f59e0b",
+                "questions": [
+                        {
+                                "question": "Quelle date est souvent retenue comme borne symbolique du début de l'époque moderne ?",
+                                "answers": [
+                                        "1453",
+                                        "1492",
+                                        "1515",
+                                        "1648"
+                                ],
+                                "correctIndex": 1,
+                                "explanation": "1492 est souvent utilisée comme borne symbolique d'ouverture de l'époque moderne.",
+                                "chapter": "Bornes chronologiques",
+                                "difficulty": "facile"
+                        },
+                        {
+                                "question": "Quel navigateur atteint l'Amérique en 1492 ?",
+                                "answers": [
+                                        "Vasco de Gama",
+                                        "Magellan",
+                                        "Christophe Colomb",
+                                        "Cortés"
+                                ],
+                                "correctIndex": 2,
+                                "explanation": "Christophe Colomb atteint les Antilles en 1492.",
+                                "chapter": "Grandes découvertes",
+                                "difficulty": "facile"
+                        },
+                        {
+                                "question": "Quel humaniste est souvent associé à l'éloge d'une réforme morale et intellectuelle de l'Église ?",
+                                "answers": [
+                                        "Érasme",
+                                        "Luther",
+                                        "Calvin",
+                                        "Bossuet"
+                                ],
+                                "correctIndex": 0,
+                                "explanation": "Érasme incarne l'humanisme chrétien du début du XVIe siècle.",
+                                "chapter": "Humanisme",
+                                "difficulty": "moyen"
+                        },
+                        {
+                                "question": "Qui publie les 95 thèses en 1517 ?",
+                                "answers": [
+                                        "Calvin",
+                                        "Luther",
+                                        "Henri VIII",
+                                        "Zwingli"
+                                ],
+                                "correctIndex": 1,
+                                "explanation": "Martin Luther lance un mouvement majeur de contestation religieuse en 1517.",
+                                "chapter": "Réformes religieuses",
+                                "difficulty": "facile"
+                        },
+                        {
+                                "question": "Quel concile organise la réponse catholique à la Réforme protestante ?",
+                                "answers": [
+                                        "Nicée",
+                                        "Latran IV",
+                                        "Trente",
+                                        "Vienne"
+                                ],
+                                "correctIndex": 2,
+                                "explanation": "Le concile de Trente est au cœur de la Réforme catholique.",
+                                "chapter": "Réforme catholique",
+                                "difficulty": "moyen"
+                        },
+                        {
+                                "question": "Quel roi de France est le plus associé à la monarchie absolue ?",
+                                "answers": [
+                                        "François Ier",
+                                        "Henri IV",
+                                        "Louis XIV",
+                                        "Louis XVI"
+                                ],
+                                "correctIndex": 2,
+                                "explanation": "Louis XIV incarne la monarchie absolue dans l'historiographie classique.",
+                                "chapter": "Monarchie absolue",
+                                "difficulty": "facile"
+                        },
+                        {
+                                "question": "Quel édit promulgué en 1598 accorde des droits aux protestants français ?",
+                                "answers": [
+                                        "Édit de Fontainebleau",
+                                        "Édit de Nantes",
+                                        "Édit de Milan",
+                                        "Édit de Worms"
+                                ],
+                                "correctIndex": 1,
+                                "explanation": "L'édit de Nantes est promulgué par Henri IV en 1598.",
+                                "chapter": "Guerres de Religion",
+                                "difficulty": "moyen"
+                        },
+                        {
+                                "question": "Quelle guerre se termine en 1648 par les traités de Westphalie ?",
+                                "answers": [
+                                        "La guerre de Cent Ans",
+                                        "La guerre de Trente Ans",
+                                        "La guerre de Sept Ans",
+                                        "La guerre de Succession d'Espagne"
+                                ],
+                                "correctIndex": 1,
+                                "explanation": "La guerre de Trente Ans s'achève en 1648 avec les traités de Westphalie.",
+                                "chapter": "Europe moderne",
+                                "difficulty": "moyen"
+                        },
+                        {
+                                "question": "Quel mouvement intellectuel du XVIIIe siècle critique l'absolutisme et valorise la raison ?",
+                                "answers": [
+                                        "Le romantisme",
+                                        "Les Lumières",
+                                        "La scolastique",
+                                        "Le mercantilisme"
+                                ],
+                                "correctIndex": 1,
+                                "explanation": "Les Lumières développent une réflexion critique sur la société, le pouvoir et la religion.",
+                                "chapter": "XVIIIe siècle",
+                                "difficulty": "facile"
+                        },
+                        {
+                                "question": "Quel événement de 1789 marque la fin symbolique de l'Ancien Régime en France ?",
+                                "answers": [
+                                        "La prise de la Bastille",
+                                        "Le sacre de Louis XVI",
+                                        "Le Concordat",
+                                        "Le Consulat"
+                                ],
+                                "correctIndex": 0,
+                                "explanation": "La prise de la Bastille, le 14 juillet 1789, devient un symbole fort de la Révolution.",
+                                "chapter": "Révolution française",
+                                "difficulty": "facile"
+                        }
+                ]
+        },
+        {
+                "id": "methodo",
+                "name": "Méthodologie",
+                "color": "#22c55e",
+                "questions": [
+                        {
+                                "question": "Dans une dissertation d'histoire, que faut-il poser clairement dans l'introduction ?",
+                                "answers": [
+                                        "La conclusion",
+                                        "La problématique",
+                                        "La note souhaitée",
+                                        "Une citation obligatoire"
+                                ],
+                                "correctIndex": 1,
+                                "explanation": "La problématique guide toute la démonstration.",
+                                "chapter": "Dissertation",
+                                "difficulty": "facile"
+                        },
+                        {
+                                "question": "Quel est le premier réflexe devant un sujet de dissertation ?",
+                                "answers": [
+                                        "Recopier le cours",
+                                        "Définir les termes et cerner le sujet",
+                                        "Faire la conclusion",
+                                        "Chercher une citation"
+                                ],
+                                "correctIndex": 1,
+                                "explanation": "Il faut d'abord comprendre précisément le sujet avant de construire le devoir.",
+                                "chapter": "Analyse du sujet",
+                                "difficulty": "facile"
+                        },
+                        {
+                                "question": "Un bon plan de dissertation doit être :",
+                                "answers": [
+                                        "Très long mais flou",
+                                        "Clair, équilibré et démonstratif",
+                                        "Uniquement chronologique sans logique",
+                                        "Improvisé pendant la rédaction"
+                                ],
+                                "correctIndex": 1,
+                                "explanation": "Le plan doit répondre logiquement à la problématique.",
+                                "chapter": "Plan",
+                                "difficulty": "facile"
+                        },
+                        {
+                                "question": "Dans un commentaire de document, l'erreur la plus fréquente est de :",
+                                "answers": [
+                                        "Présenter l'auteur",
+                                        "Situer le contexte",
+                                        "Paraphraser sans analyser",
+                                        "Identifier la nature du texte"
+                                ],
+                                "correctIndex": 2,
+                                "explanation": "Le commentaire doit expliquer le document, pas seulement le reformuler.",
+                                "chapter": "Commentaire de document",
+                                "difficulty": "facile"
+                        },
+                        {
+                                "question": "Pourquoi faut-il présenter la nature, l'auteur et la date d'un document ?",
+                                "answers": [
+                                        "Pour remplir l'introduction",
+                                        "Pour comprendre sa portée et ses limites",
+                                        "Parce que c'est facultatif",
+                                        "Pour éviter l'analyse"
+                                ],
+                                "correctIndex": 1,
+                                "explanation": "Identifier précisément le document permet de mieux l'interpréter.",
+                                "chapter": "Commentaire de document",
+                                "difficulty": "moyen"
+                        },
+                        {
+                                "question": "À quoi sert principalement la conclusion dans une dissertation ?",
+                                "answers": [
+                                        "À introduire de nouvelles idées",
+                                        "À résumer la démonstration et répondre au sujet",
+                                        "À recopier l'introduction",
+                                        "À ajouter des dates"
+                                ],
+                                "correctIndex": 1,
+                                "explanation": "La conclusion répond clairement à la problématique et synthétise le raisonnement.",
+                                "chapter": "Conclusion",
+                                "difficulty": "facile"
+                        },
+                        {
+                                "question": "Dans un devoir d'histoire, un exemple précis sert surtout à :",
+                                "answers": [
+                                        "Décorer la copie",
+                                        "Illustrer et prouver l'argument",
+                                        "Remplacer l'argumentation",
+                                        "Allonger le texte"
+                                ],
+                                "correctIndex": 1,
+                                "explanation": "Un exemple n'a de valeur que s'il soutient une idée clairement formulée.",
+                                "chapter": "Argumentation",
+                                "difficulty": "moyen"
+                        },
+                        {
+                                "question": "Que faut-il éviter dans une introduction ?",
+                                "answers": [
+                                        "Définir les termes",
+                                        "Annoncer le plan",
+                                        "Partir hors sujet ou trop loin du sujet",
+                                        "Poser une problématique"
+                                ],
+                                "correctIndex": 2,
+                                "explanation": "Une introduction doit aller droit au sujet et préparer la démonstration.",
+                                "chapter": "Introduction",
+                                "difficulty": "moyen"
+                        },
+                        {
+                                "question": "Dans une copie d'histoire, les transitions servent à :",
+                                "answers": [
+                                        "Décorer le devoir",
+                                        "Relier logiquement les parties",
+                                        "Remplacer les titres",
+                                        "Gagner du temps"
+                                ],
+                                "correctIndex": 1,
+                                "explanation": "Les transitions montrent la progression du raisonnement.",
+                                "chapter": "Rédaction",
+                                "difficulty": "moyen"
+                        },
+                        {
+                                "question": "Pour réussir un rattrapage, la stratégie la plus efficace est souvent de :",
+                                "answers": [
+                                        "Tout apprendre par cœur",
+                                        "Miser sur la méthode et quelques chapitres solides",
+                                        "Improviser le jour J",
+                                        "Faire seulement des fiches sans s'entraîner"
+                                ],
+                                "correctIndex": 1,
+                                "explanation": "En rattrapage, une bonne méthode et des connaissances ciblées valent mieux qu'un apprentissage massif mal maîtrisé.",
+                                "chapter": "Stratégie d'examen",
+                                "difficulty": "facile"
+                        }
+                ]
+        }
+]
     };
 
     const state = {data:null,selectedSubjectId:null,quizQuestions:[],currentIndex:0,score:0,reviewMode:false,awaitingNext:false,shuffled:false};
@@ -221,7 +762,7 @@
       state.data.subjects.forEach(s => {
         const btn = document.createElement('button');
         btn.className = 'chip' + (s.id === state.selectedSubjectId ? ' active' : '');
-        btn.innerHTML = `<span>${s.name}</span><small>Appuyer pour ouvrir la fiche détaillée</small>`;
+        btn.innerHTML = `<span>${s.name}</span>`;
         btn.onclick = () => { state.selectedSubjectId = s.id; renderSubjects(); updateStats(); openSheet(); };
         box.appendChild(btn);
       });
