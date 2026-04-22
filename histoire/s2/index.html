@@ -1,1 +1,558 @@
-test
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>HISTOIRE FICHES ET QUIZ S2</title>
+  <meta name="theme-color" content="#0f172a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="HISTOIRE FICHES ET QUIZ S2" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="icon_quizz.png" />
+  <link rel="icon" type="image/png" href="icon_quizz.png" />
+  <style>
+    :root{
+      --bg1:#08111f;--bg2:#0f1f3c;--card:rgba(255,255,255,.10);--line:rgba(255,255,255,.12);
+      --text:#f8fafc;--muted:#cbd5e1;--shadow:0 18px 45px rgba(0,0,0,.32);--radius:24px;
+    }
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    html,body{
+      margin:0;padding:0;min-height:100%;
+      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;
+      color:var(--text);
+      background:radial-gradient(circle at top,#1e3a8a 0%,var(--bg2) 35%,var(--bg1) 100%);
+    }
+    body{padding:calc(18px + env(safe-area-inset-top)) 16px calc(28px + env(safe-area-inset-bottom))}
+    .app{max-width:1100px;margin:0 auto}
+    .hero{
+      background:linear-gradient(135deg,rgba(96,165,250,.18),rgba(167,139,250,.16));
+      backdrop-filter:blur(14px);border:1px solid var(--line);border-radius:32px;padding:22px;box-shadow:var(--shadow)
+    }
+    .title{font-size:clamp(30px,6vw,52px);font-weight:900;letter-spacing:-.04em;line-height:.95;margin:0}
+    .tabs{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+    .tab{
+      appearance:none;border:none;border-radius:18px;padding:14px 18px;font-size:15px;font-weight:800;cursor:pointer;
+      background:rgba(255,255,255,.08);color:var(--text);border:1px solid var(--line)
+    }
+    .tab.active{background:linear-gradient(135deg,#60a5fa,#818cf8);color:white}
+    .grid{display:grid;grid-template-columns:1.15fr .85fr;gap:16px;margin-top:16px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);backdrop-filter:blur(14px);box-shadow:var(--shadow)}
+    .section{padding:18px}
+    .section h2{margin:0 0 14px;font-size:19px;letter-spacing:-.02em}
+    .chips{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+    .chip{
+      border:none;background:rgba(255,255,255,.09);color:var(--text);padding:14px 16px;border-radius:18px;
+      font-size:15px;font-weight:800;cursor:pointer;border:1px solid transparent;text-align:left
+    }
+    .chip.active{background:linear-gradient(135deg,rgba(96,165,250,.28),rgba(167,139,250,.24));border-color:rgba(255,255,255,.16)}
+    .controls{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+    button.action{
+      appearance:none;border:none;border-radius:18px;padding:14px 16px;font-size:15px;font-weight:800;cursor:pointer
+    }
+    .primary{background:linear-gradient(135deg,#60a5fa,#818cf8);color:white}
+    .secondary{background:rgba(255,255,255,.08);color:var(--text);border:1px solid var(--line)}
+    .danger{background:rgba(239,68,68,.15);color:#fecaca;border:1px solid rgba(239,68,68,.25)}
+    .row{display:flex;gap:12px;flex-wrap:wrap}
+    .stat{flex:1 1 140px;background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:20px;padding:14px}
+    .stat .label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+    .stat .value{margin-top:4px;font-size:28px;font-weight:900;letter-spacing:-.04em}
+    .view{display:none;margin-top:16px}
+    .view.active{display:block}
+    .sheetTop,.quizTop{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:12px;flex-wrap:wrap}
+    .sheetCard,.questionCard{padding:20px}
+    .sheetCard h3{margin:0 0 8px;font-size:30px;letter-spacing:-.03em}
+    .sheetCard h4{margin:22px 0 10px;font-size:18px;letter-spacing:-.02em}
+    .sheetLead{color:var(--muted);font-size:15px;line-height:1.55;margin:0 0 16px}
+    .sheetBlocks{display:grid;gap:12px}
+    .sheetBlock{background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:20px;padding:16px}
+    .sheetBlock ul{margin:0;padding-left:18px;display:grid;gap:8px}
+    .sheetBlock li{line-height:1.52}
+    .sheetGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .badgeRow{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+    .badge{
+      display:inline-flex;align-items:center;gap:6px;padding:8px 10px;background:rgba(255,255,255,.07);
+      border:1px solid var(--line);border-radius:999px;font-size:13px;font-weight:700;color:var(--text)
+    }
+    .coursePart{background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:20px;padding:16px}
+    .coursePart p,.coursePart li{line-height:1.62;color:var(--text)}
+    .coursePart p{margin:0 0 12px}
+    .coursePart ul{margin:8px 0 0;padding-left:18px}
+    .muted{color:var(--muted);font-size:14px;line-height:1.45}
+    .progressWrap{height:12px;background:rgba(255,255,255,.08);border-radius:999px;overflow:hidden;border:1px solid var(--line)}
+    .progressBar{height:100%;width:0;background:linear-gradient(90deg,#60a5fa,#a78bfa);transition:.25s width}
+    .meta{font-size:13px;color:var(--muted);margin-bottom:12px}
+    .question{font-size:27px;line-height:1.15;font-weight:900;letter-spacing:-.03em;margin:0 0 16px}
+    .answers{display:grid;gap:10px}
+    .answer{
+      width:100%;text-align:left;background:rgba(255,255,255,.07);color:var(--text);border:1px solid var(--line);
+      border-radius:18px;padding:15px 16px;font-size:16px;font-weight:700;cursor:pointer
+    }
+    .answer.correct{background:rgba(34,197,94,.18);border-color:rgba(34,197,94,.45)}
+    .answer.wrong{background:rgba(239,68,68,.18);border-color:rgba(239,68,68,.45)}
+    .explain{display:none;margin-top:14px;padding:14px;border-radius:18px;background:rgba(255,255,255,.06);border:1px solid var(--line);color:var(--muted);font-size:15px;line-height:1.45}
+    .hidden{display:none!important}
+    .list{display:grid;gap:10px}
+    .item{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:12px 14px;border-radius:18px;background:rgba(255,255,255,.06);border:1px solid var(--line)}
+    .item small{color:var(--muted);display:block;margin-top:2px}
+    @media (max-width:860px){
+      .grid{grid-template-columns:1fr}
+      .question{font-size:23px}
+      .sheetGrid,.chips{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <section class="hero">
+      <h1 class="title">HISTOIRE FICHES ET QUIZ S2</h1>
+      <div class="tabs">
+        <button id="tabSheets" class="tab active">Fiches</button>
+        <button id="tabQuiz" class="tab">Quiz</button>
+      </div>
+    </section>
+
+    <div class="grid">
+      <section class="card section">
+        <h2>Matières du deuxième semestre</h2>
+        <div id="subjectChips" class="chips"></div>
+
+        <div id="sheetControls" class="controls">
+          <button id="openSynthBtn" class="action secondary">Fiche synthétique</button>
+          <button id="openDetailBtn" class="action primary">Fiche détaillée</button>
+        </div>
+
+        <div id="quizControls" class="controls hidden">
+          <button id="startBtn" class="action primary">Commencer le quiz</button>
+          <button id="reviewBtn" class="action secondary">Mode révision</button>
+          <button id="shuffleBtn" class="action secondary">Mélanger questions</button>
+        </div>
+
+        <div class="row" style="margin-top:14px">
+          <div class="stat"><div class="label">Questions</div><div id="questionsCount" class="value">0</div></div>
+          <div class="stat"><div class="label">Meilleur score</div><div id="bestScore" class="value">0%</div></div>
+          <div class="stat"><div class="label">Dernier score</div><div id="lastScore" class="value">0%</div></div>
+        </div>
+
+        <div id="sheetView" class="view active">
+          <div class="sheetTop">
+            <div style="font-weight:800" id="sheetTitleTop">Fiche</div>
+            <div class="badgeRow">
+              <span class="badge" id="sheetModeBadge">Synthétique</span>
+            </div>
+          </div>
+          <div class="card sheetCard"><div id="sheetContent"></div></div>
+        </div>
+
+        <div id="quizWrap" class="view">
+          <div class="quizTop">
+            <div style="font-weight:800" id="progressText">Question 1/1</div>
+            <button id="quitBtn" class="action danger">Quitter</button>
+          </div>
+          <div class="progressWrap"><div id="progressBar" class="progressBar"></div></div>
+          <div class="card questionCard" style="margin-top:14px">
+            <div id="questionMeta" class="meta"></div>
+            <h3 id="questionText" class="question"></h3>
+            <div id="answers" class="answers"></div>
+            <div id="explain" class="explain"></div>
+            <div class="controls" style="margin-top:14px">
+              <button id="nextBtn" class="action primary hidden">Question suivante</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card section">
+        <h2>Suivi</h2>
+        <p class="muted">Les fiches servent à comprendre le semestre et à construire les bases. Les quiz servent à vérifier les repères, notions et mécanismes méthodologiques. Les deux parties sont séparées pour faciliter la révision.</p>
+        <h2 style="margin-top:20px">Résultats par matière</h2>
+        <div id="resultsList" class="list"></div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const DATA = {
+      subjects: [
+        {
+          id: "contemporaine",
+          name: "Histoire contemporaine",
+          questions: [
+            {question:"En quelle année débute la Révolution française ?",answers:["1776","1789","1799","1815"],correctIndex:1,explanation:"La Révolution française débute en 1789.",chapter:"Révolution française",difficulty:"facile"},
+            {question:"Quel événement symbolise le début de la Révolution française ?",answers:["Le sacre de Napoléon","La prise de la Bastille","Le congrès de Vienne","Le coup d'État du 18 Brumaire"],correctIndex:1,explanation:"La prise de la Bastille est l’événement symbolique du début de la Révolution.",chapter:"Révolution française",difficulty:"facile"},
+            {question:"En quelle année Napoléon devient-il empereur ?",answers:["1799","1802","1804","1812"],correctIndex:2,explanation:"Napoléon devient empereur en 1804.",chapter:"Empire",difficulty:"moyen"},
+            {question:"Quelle bataille marque la défaite définitive de Napoléon en 1815 ?",answers:["Austerlitz","Leipzig","Waterloo","Iéna"],correctIndex:2,explanation:"Waterloo marque la défaite définitive de Napoléon.",chapter:"Empire",difficulty:"moyen"},
+            {question:"Dans quel pays commence la révolution industrielle ?",answers:["France","Allemagne","Royaume-Uni","Italie"],correctIndex:2,explanation:"La révolution industrielle commence au Royaume-Uni.",chapter:"Industrialisation",difficulty:"facile"},
+            {question:"Quel secteur joue un rôle majeur dans la première révolution industrielle ?",answers:["Textile","Aéronautique","Numérique","Automobile"],correctIndex:0,explanation:"Le textile est central dans la première révolution industrielle.",chapter:"Industrialisation",difficulty:"moyen"},
+            {question:"Quelle année est associée au Printemps des peuples ?",answers:["1815","1830","1848","1870"],correctIndex:2,explanation:"1848 est l’année du Printemps des peuples.",chapter:"Révolutions",difficulty:"facile"},
+            {question:"Quel régime s'installe en France après la chute du Second Empire ?",answers:["La Première République","La Troisième République","La Restauration","Le Consulat"],correctIndex:1,explanation:"La Troisième République s’installe après 1870.",chapter:"France politique",difficulty:"moyen"},
+            {question:"En quelle année débute la Première Guerre mondiale ?",answers:["1912","1914","1916","1918"],correctIndex:1,explanation:"La Première Guerre mondiale débute en 1914.",chapter:"Première Guerre mondiale",difficulty:"facile"},
+            {question:"Quel congrès redessine l'Europe après la chute de Napoléon ?",answers:["Le congrès de Berlin","Le congrès de Vienne","Le traité de Rome","Le traité de Paris de 1919"],correctIndex:1,explanation:"Le congrès de Vienne redessine l’Europe après Napoléon.",chapter:"Europe du XIXe siècle",difficulty:"moyen"}
+          ]
+        },
+        {
+          id: "mondecontemporain",
+          name: "Monde contemporain",
+          questions: [
+            {question:"Quel traité règle la paix avec l’Allemagne après la Première Guerre mondiale ?",answers:["Traité de Maastricht","Traité de Versailles","Traité de Rome","Traité de Westphalie"],correctIndex:1,explanation:"Le traité de Versailles est signé en 1919.",chapter:"Après-guerre",difficulty:"facile"},
+            {question:"En quelle année a lieu la révolution bolchevique ?",answers:["1905","1917","1929","1939"],correctIndex:1,explanation:"La révolution bolchevique a lieu en 1917.",chapter:"Russie",difficulty:"facile"},
+            {question:"Quelle crise économique mondiale éclate en 1929 ?",answers:["La Grande Dépression","La crise pétrolière","La crise de Suez","La crise de 1873"],correctIndex:0,explanation:"Le krach de 1929 ouvre la Grande Dépression.",chapter:"Entre-deux-guerres",difficulty:"moyen"},
+            {question:"Qui s’impose à la tête de l’URSS à la fin des années 1920 ?",answers:["Lénine","Trotski","Staline","Khrouchtchev"],correctIndex:2,explanation:"Staline s’impose à la tête de l’URSS.",chapter:"URSS",difficulty:"moyen"},
+            {question:"En quelle année débute la Seconde Guerre mondiale en Europe ?",answers:["1936","1938","1939","1941"],correctIndex:2,explanation:"La guerre débute en 1939.",chapter:"Seconde Guerre mondiale",difficulty:"facile"},
+            {question:"Quel événement provoque l’entrée en guerre des États-Unis ?",answers:["Stalingrad","Pearl Harbor","Yalta","Normandie"],correctIndex:1,explanation:"L’attaque de Pearl Harbor provoque l’entrée en guerre des États-Unis.",chapter:"Seconde Guerre mondiale",difficulty:"moyen"},
+            {question:"Quel mur devient le symbole de la guerre froide après 1961 ?",answers:["Mur d’Hadrien","Mur de l’Atlantique","Mur de Berlin","Mur des Lamentations"],correctIndex:2,explanation:"Le mur de Berlin symbolise la division du monde de la guerre froide.",chapter:"Guerre froide",difficulty:"facile"},
+            {question:"Quel pays devient indépendant en 1947 après la domination britannique ?",answers:["Algérie","Inde","Vietnam","Égypte"],correctIndex:1,explanation:"L’Inde devient indépendante en 1947.",chapter:"Décolonisation",difficulty:"moyen"},
+            {question:"Quel traité fonde la CEE en 1957 ?",answers:["Traité de Rome","Traité de Paris","Traité de Lisbonne","Traité de Nice"],correctIndex:0,explanation:"Le traité de Rome fonde la CEE en 1957.",chapter:"Construction européenne",difficulty:"moyen"},
+            {question:"En quelle année tombe le mur de Berlin ?",answers:["1987","1989","1991","1995"],correctIndex:1,explanation:"Le mur de Berlin tombe en 1989.",chapter:"Fin du XXe siècle",difficulty:"facile"}
+          ]
+        },
+        {
+          id: "histoirepolitique",
+          name: "Histoire politique",
+          questions: [
+            {question:"Qu’est-ce qu’une constitution ?",answers:["Une simple loi fiscale","Un texte qui organise les pouvoirs","Un traité de paix","Une décision judiciaire"],correctIndex:1,explanation:"Une constitution organise les pouvoirs dans un État.",chapter:"Institutions",difficulty:"facile"},
+            {question:"Quel auteur est associé à la souveraineté populaire ?",answers:["Rousseau","Bossuet","Metternich","Machiavel"],correctIndex:0,explanation:"Rousseau est associé à la souveraineté populaire.",chapter:"Souveraineté",difficulty:"moyen"},
+            {question:"Dans une monarchie constitutionnelle, le pouvoir du roi est-il limité ?",answers:["Oui","Non","Jamais","Seulement en temps de guerre"],correctIndex:0,explanation:"Dans une monarchie constitutionnelle, le pouvoir du roi est limité par une constitution.",chapter:"Régimes politiques",difficulty:"facile"},
+            {question:"Le suffrage universel masculin en France est durablement établi en :",answers:["1789","1815","1848","1875"],correctIndex:2,explanation:"1848 est la grande date du suffrage universel masculin.",chapter:"Citoyenneté",difficulty:"moyen"},
+            {question:"Quel régime français s’installe durablement après 1870 ?",answers:["Le Directoire","La Troisième République","Le Consulat","La Restauration"],correctIndex:1,explanation:"La Troisième République s’installe durablement après 1870.",chapter:"Républiques",difficulty:"moyen"},
+            {question:"Dans un régime parlementaire, le gouvernement est responsable devant :",answers:["Le roi seul","Le Parlement","L’armée","Les juges"],correctIndex:1,explanation:"Le gouvernement est responsable devant le Parlement.",chapter:"Parlementarisme",difficulty:"facile"},
+            {question:"Le libéralisme politique défend notamment :",answers:["Le parti unique","La séparation des pouvoirs","La suppression des élections","La dictature militaire"],correctIndex:1,explanation:"Le libéralisme politique défend notamment la séparation des pouvoirs.",chapter:"Libéralisme",difficulty:"moyen"},
+            {question:"Au XIXe siècle, le nationalisme vise souvent :",answers:["La disparition des États","L’unité politique d’un peuple","Le retour à la féodalité","La fin des constitutions"],correctIndex:1,explanation:"Le nationalisme vise souvent à unir politiquement un peuple.",chapter:"Nationalisme",difficulty:"moyen"},
+            {question:"Quel trait caractérise un régime totalitaire ?",answers:["Le pluralisme politique","Le parti unique","La stricte séparation des pouvoirs","La neutralité de l’État"],correctIndex:1,explanation:"Le parti unique est un trait classique des régimes totalitaires.",chapter:"Totalitarismes",difficulty:"moyen"},
+            {question:"Dans une démocratie libérale, les élections doivent être :",answers:["Héréditaires","Libres","Militaires","Réservées à une élite fixe"],correctIndex:1,explanation:"Les élections doivent être libres dans une démocratie libérale.",chapter:"Démocratie",difficulty:"facile"}
+          ]
+        },
+        {
+          id: "methodologies2",
+          name: "Méthodologie",
+          questions: [
+            {question:"Quel élément doit apparaître dans l’introduction d’une dissertation ?",answers:["Une problématique","Une bibliographie complète","Une annexe","Une conclusion"],correctIndex:0,explanation:"L’introduction doit faire apparaître une problématique.",chapter:"Dissertation",difficulty:"facile"},
+            {question:"Avant de rédiger, il faut d’abord :",answers:["Écrire immédiatement","Faire un brouillon","Sauter l’introduction","Recopier le cours"],correctIndex:1,explanation:"Le brouillon sert à organiser la pensée.",chapter:"Organisation",difficulty:"facile"},
+            {question:"Un bon plan doit être :",answers:["Flou mais long","Logique","Improvisé","Uniquement chronologique"],correctIndex:1,explanation:"Un bon plan doit être logique et démonstratif.",chapter:"Plan",difficulty:"facile"},
+            {question:"Dans un commentaire de document, il faut éviter :",answers:["L’analyse","La contextualisation","La paraphrase","La présentation du document"],correctIndex:2,explanation:"La paraphrase est l’erreur classique.",chapter:"Commentaire",difficulty:"facile"},
+            {question:"Présenter un document, c’est notamment indiquer :",answers:["Sa nature","La couleur du support","Le nom du correcteur","Son prix"],correctIndex:0,explanation:"Il faut identifier la nature du document.",chapter:"Document",difficulty:"facile"},
+            {question:"Analyser un sujet, c’est d’abord :",answers:["Définir les termes","Chercher une citation brillante","Écrire la conclusion","Mémoriser des dates au hasard"],correctIndex:0,explanation:"Il faut d’abord définir les termes du sujet.",chapter:"Analyse du sujet",difficulty:"moyen"},
+            {question:"Chaque grande partie d’un devoir doit :",answers:["Répondre à la question","Être indépendante du sujet","Supprimer les exemples","Être purement descriptive"],correctIndex:0,explanation:"Chaque partie doit répondre à la question posée.",chapter:"Développement",difficulty:"facile"},
+            {question:"Un exemple sert à :",answers:["Décorer la copie","Appuyer une idée","Remplacer l’argumentation","Gagner de la place"],correctIndex:1,explanation:"Un exemple sert à appuyer une idée.",chapter:"Argumentation",difficulty:"facile"},
+            {question:"La conclusion doit :",answers:["Ouvrir un nouveau développement","Répondre à la problématique","Ignorer le sujet","Être plus longue que le reste"],correctIndex:1,explanation:"La conclusion doit répondre à la problématique.",chapter:"Conclusion",difficulty:"facile"},
+            {question:"Pendant l’examen, il faut garder du temps pour :",answers:["Relire","Dessiner un schéma décoratif","Changer complètement de sujet","Rien"],correctIndex:0,explanation:"Il faut garder un temps de relecture.",chapter:"Gestion du temps",difficulty:"facile"}
+          ]
+        }
+      ]
+    };
+
+    const SHEETS = {
+      contemporaine: {
+        synth: {
+          lead: "Fiche rapide sur les grands repères de l’époque contemporaine : Révolution, Empire, industrialisation, XIXe siècle politique et Première Guerre mondiale.",
+          objectifs: ["Situer les grandes ruptures de 1789 à 1914.", "Comprendre les transformations politiques du XIXe siècle.", "Relier industrialisation et mutations sociales."],
+          reperes: ["1789 : début de la Révolution française", "1799 : coup d'État du 18 Brumaire", "1804 : sacre de Napoléon", "1815 : congrès de Vienne", "1848 : Printemps des peuples", "1870 : chute du Second Empire", "1914 : début de la Première Guerre mondiale"],
+          notions: ["Révolution", "Nation", "Libéralisme", "Industrialisation", "République", "Empire"],
+          idees: ["L’époque contemporaine s’ouvre avec une rupture révolutionnaire majeure.", "Le XIXe siècle combine transformations politiques, économiques et sociales.", "L’industrialisation modifie profondément les sociétés européennes."],
+          sujets: ["Quels héritages de 1789 dans l’Europe du XIXe siècle ?", "Comment l’industrialisation transforme-t-elle les sociétés ?", "Pourquoi 1848 est-elle une année charnière ?"]
+        },
+        detail: {
+          lead: "Cours détaillé sur l’histoire contemporaine, de la Révolution française aux débuts du XXe siècle.",
+          parts: [
+            {title:"I. La Révolution française, une rupture fondatrice", paragraphs:["La Révolution française de 1789 constitue une rupture politique majeure. Elle remet en cause l’ordre social d’Ancien Régime, les privilèges et la légitimité monarchique traditionnelle.","Elle ouvre un cycle de transformations politiques, juridiques et sociales qui déborde largement les frontières françaises. L’idée de souveraineté nationale, la citoyenneté et les principes de liberté et d’égalité prennent une place centrale.","La période révolutionnaire ne doit pas être réduite à un seul événement. Elle comprend des phases contrastées : monarchie constitutionnelle, radicalisation, Terreur, Directoire."]},
+            {title:"II. Le Consulat et l’Empire napoléonien", paragraphs:["Napoléon Bonaparte s’impose dans le contexte d’instabilité de la fin de la Révolution. Le Consulat puis l’Empire permettent une centralisation forte du pouvoir.","Napoléon conserve certains acquis révolutionnaires, notamment administratifs et juridiques, mais il rétablit un pouvoir personnel puissant. Le Code civil, la centralisation administrative et la réforme de l’État marquent durablement l’histoire française.","L’Empire est aussi une entreprise militaire et politique européenne. Son expansion diffuse certains principes révolutionnaires tout en suscitant résistances et oppositions."], bullets:["Stabilisation politique après les troubles révolutionnaires","Pouvoir personnel renforcé","Diffusion et contradictions de l’héritage révolutionnaire"]},
+            {title:"III. Le congrès de Vienne et l’Europe du XIXe siècle", paragraphs:["Après la chute de Napoléon, le congrès de Vienne tente de restaurer un ordre européen stable. Il cherche à contenir les bouleversements révolutionnaires tout en réorganisant les équilibres entre puissances.","Le XIXe siècle reste cependant traversé par les forces du libéralisme, du nationalisme et des revendications constitutionnelles. Les révolutions de 1830 puis de 1848 montrent la persistance des tensions politiques."]},
+            {title:"IV. Industrialisation et société", paragraphs:["La révolution industrielle commence au Royaume-Uni avant de s’étendre à d’autres espaces européens. Elle repose sur de nouvelles techniques, sur l’usage du charbon et de la machine, et sur une nouvelle organisation du travail.","Elle transforme les villes, les rythmes sociaux, les hiérarchies économiques et les rapports entre classes sociales. La bourgeoisie industrielle se renforce, tandis que le monde ouvrier se développe dans des conditions souvent difficiles.","L’industrialisation n’est pas qu’une affaire économique : elle modifie aussi les représentations, les mobilités et les attentes politiques."]},
+            {title:"V. La construction des régimes politiques modernes", paragraphs:["Le XIXe siècle voit alterner monarchies, empires et républiques. En France, la succession des régimes traduit l’instabilité de la période, mais aussi la recherche d’un nouvel équilibre entre autorité, liberté et représentation.","La Troisième République, après 1870, installe plus durablement le cadre républicain. Cela ne signifie pas la disparition des conflits, mais la mise en place d’une forme plus stable de régime politique."]},
+            {title:"VI. L’entrée dans le XXe siècle et la guerre", paragraphs:["À la veille de 1914, l’Europe est marquée par les rivalités de puissance, les impérialismes et les tensions nationales. La Première Guerre mondiale ouvre une nouvelle période, mais elle s’enracine dans des dynamiques du XIXe siècle.","Pour un étudiant de L1, il est essentiel de comprendre les continuités : la guerre de 1914 n’est pas une rupture sans passé, mais l’aboutissement de tensions accumulées."]}
+          ],
+          savoirFaire: ["Situer les principaux régimes français du XIXe siècle.", "Relier industrialisation et mutation sociale.", "Expliquer la portée politique de 1789 et de 1848."]
+        }
+      },
+
+      mondecontemporain: {
+        synth: {
+          lead: "Fiche rapide sur le monde contemporain : guerres mondiales, totalitarismes, guerre froide, décolonisation et construction européenne.",
+          objectifs: ["Maîtriser les grandes dates du XXe siècle.", "Comprendre les logiques des affrontements idéologiques.", "Retenir les étapes majeures de la décolonisation et de l’Europe."],
+          reperes: ["1914-1918 : Première Guerre mondiale", "1917 : révolution bolchevique", "1929 : crise économique mondiale", "1939-1945 : Seconde Guerre mondiale", "1947 : début de la guerre froide", "1957 : traité de Rome", "1989 : chute du mur de Berlin"],
+          notions: ["Totalitarisme", "Guerre froide", "Bipolarisation", "Décolonisation", "CEE", "Bloc"],
+          idees: ["Le XXe siècle est structuré par des guerres et des oppositions idéologiques.", "Le monde devient bipolaire après 1945.", "La décolonisation transforme profondément l’équilibre international."],
+          sujets: ["Pourquoi le XXe siècle est-il un siècle de conflits ?", "Comment comprendre la guerre froide ?", "Quelles sont les grandes étapes de la décolonisation ?"]
+        },
+        detail: {
+          lead: "Cours détaillé sur les grands repères du monde contemporain, du premier conflit mondial à la fin de la guerre froide.",
+          parts: [
+            {title:"I. La Première Guerre mondiale et ses conséquences", paragraphs:["La Première Guerre mondiale bouleverse profondément l’Europe et le monde. Son ampleur militaire, humaine et matérielle en fait un conflit d’un type nouveau.","La guerre transforme les sociétés, les économies et les États. Elle entraîne aussi des recompositions territoriales et politiques majeures.","Le traité de Versailles règle officiellement la paix avec l’Allemagne, mais laisse de nombreuses tensions ouvertes."]},
+            {title:"II. La révolution russe et l’URSS", paragraphs:["La révolution bolchevique de 1917 ouvre une rupture politique majeure. Pour la première fois, un régime se réclamant du communisme s’installe durablement dans un grand État.","L’URSS devient un acteur central du XXe siècle. Sous Staline, elle connaît une industrialisation forcée, une centralisation extrême et une forte violence politique."]},
+            {title:"III. Les crises de l’entre-deux-guerres", paragraphs:["L’entre-deux-guerres est marqué par des fragilités politiques et économiques. Le krach de 1929 et la Grande Dépression aggravent les tensions sociales et internationales.","Dans plusieurs pays, les démocraties sont fragilisées. Des régimes totalitaires s’installent, reposant sur le parti unique, la propagande, la violence d’État et l’encadrement massif des sociétés."]},
+            {title:"IV. La Seconde Guerre mondiale", paragraphs:["La Seconde Guerre mondiale commence en Europe en 1939. Elle prend rapidement une ampleur mondiale.","Le conflit se distingue par la violence extrême exercée contre les civils, par les logiques d’anéantissement et par le caractère total de la guerre.","L’attaque de Pearl Harbor provoque l’entrée en guerre des États-Unis, ce qui transforme encore davantage l’échelle du conflit."]},
+            {title:"V. La guerre froide", paragraphs:["Après 1945, le monde s’organise autour de deux pôles majeurs : les États-Unis et l’URSS. La guerre froide n’est pas une guerre directe permanente entre les deux, mais une opposition globale, idéologique, politique, militaire et stratégique.","Le mur de Berlin devient le symbole le plus visible de cette division. Il matérialise la séparation entre deux blocs et deux systèmes concurrents."]},
+            {title:"VI. Décolonisation et nouveaux États", paragraphs:["Après la Seconde Guerre mondiale, les empires coloniaux européens se fragilisent. Des mouvements nationalistes réclament l’indépendance.","La décolonisation ne suit pas partout le même rythme ni les mêmes formes. Elle peut être négociée ou violente. L’indépendance de l’Inde en 1947 est une date majeure, mais d’autres processus s’inscrivent dans des conflits plus longs."]},
+            {title:"VII. Construction européenne et fin de la bipolarisation", paragraphs:["La construction européenne s’affirme progressivement après 1945. Le traité de Rome de 1957 constitue une étape fondamentale avec la création de la CEE.","La chute du mur de Berlin en 1989 marque un tournant historique. Elle symbolise la crise puis l’effondrement du système soviétique en Europe de l’Est et la fin d’un monde bipolaire tel qu’il s’était structuré après 1945."]}
+          ],
+          savoirFaire: ["Comparer les deux guerres mondiales.", "Définir précisément la guerre froide.", "Expliquer les enjeux politiques de la décolonisation."]
+        }
+      },
+
+      histoirepolitique: {
+        synth: {
+          lead: "Fiche rapide sur les notions d’histoire politique : constitutions, souveraineté, citoyenneté, régimes politiques et grands courants idéologiques.",
+          objectifs: ["Définir les notions politiques de base.", "Comprendre les formes de régime aux XIXe et XXe siècles.", "Relier institutions et pratiques politiques."],
+          reperes: ["1789 : affirmation de la souveraineté nationale", "1848 : suffrage universel masculin", "1875 : consolidation républicaine", "XXe siècle : démocraties, totalitarismes et États de droit"],
+          notions: ["Constitution", "Souveraineté", "Citoyenneté", "Parlementarisme", "Nationalisme", "Libéralisme"],
+          idees: ["L’histoire politique ne se réduit pas aux institutions, mais elles y jouent un rôle central.", "Les régimes politiques évoluent selon les rapports de force sociaux et idéologiques.", "La citoyenneté et la représentation se construisent historiquement."],
+          sujets: ["Comment définir un régime politique ?", "Quelle place pour la citoyenneté au XIXe siècle ?", "Pourquoi les démocraties sont-elles fragiles ?"]
+        },
+        detail: {
+          lead: "Cours détaillé sur les principaux concepts et mécanismes de l’histoire politique moderne et contemporaine.",
+          parts: [
+            {title:"I. Constitution et organisation des pouvoirs", paragraphs:["Une constitution organise les pouvoirs dans un État. Elle fixe les principes de fonctionnement des institutions, définit les rapports entre exécutif, législatif et, selon les cas, judiciaire.","L’histoire politique moderne ne peut être comprise sans cette dimension institutionnelle. Les constitutions ne sont pas de simples textes abstraits : elles traduisent des rapports de force, des projets politiques et des compromis."]},
+            {title:"II. Souveraineté et légitimité", paragraphs:["La question de la souveraineté est centrale : qui détient le pouvoir légitime ? Le roi ? La nation ? Le peuple ? Le parlement ?","À partir de la fin du XVIIIe siècle, les théories de la souveraineté nationale et populaire prennent une importance considérable. Elles transforment la manière de penser le pouvoir politique."]},
+            {title:"III. Citoyenneté et suffrage", paragraphs:["La citoyenneté ne se réduit pas à un simple statut juridique. Elle implique des droits, des devoirs et une place dans la communauté politique.","Le suffrage universel masculin en 1848 marque une étape importante en France. Il faut toutefois rappeler que cette universalité est d’abord limitée aux hommes. La citoyenneté politique s’élargit progressivement, dans un mouvement long et conflictuel."]},
+            {title:"IV. Régimes politiques", paragraphs:["Monarchie constitutionnelle, empire, république, régime parlementaire, démocratie libérale : ces formes politiques ont chacune leur logique propre.","Il faut éviter les définitions trop mécaniques. Un régime ne se comprend pas seulement par un texte, mais aussi par ses pratiques, ses équilibres réels et ses contradictions."]},
+            {title:"V. Libéralisme, nationalisme, totalitarisme", paragraphs:["Le libéralisme politique défend les libertés, la représentation et la séparation des pouvoirs. Le nationalisme, très puissant au XIXe siècle, vise souvent l’unité politique d’un peuple ou la défense d’une identité collective.","Au XXe siècle, les totalitarismes proposent une autre logique : parti unique, encadrement massif, négation du pluralisme, mobilisation idéologique de la société."]},
+            {title:"VI. Fragilité et défense des démocraties", paragraphs:["Les démocraties libérales ne sont jamais définitivement acquises. Elles peuvent être contestées, fragilisées ou transformées.","L’histoire politique doit donc articuler institutions, idées, crises et pratiques concrètes du pouvoir."]}
+          ],
+          savoirFaire: ["Définir précisément une constitution et un régime politique.", "Comparer monarchie constitutionnelle, empire et république.", "Expliquer les différences entre démocratie libérale et totalitarisme."]
+        }
+      },
+
+      methodologies2: {
+        synth: {
+          lead: "Fiche rapide de méthodologie pour réussir les devoirs du S2 : dissertation, commentaire, gestion du temps et exigences universitaires.",
+          objectifs: ["Savoir structurer un devoir.", "Faire une introduction claire.", "Éviter les erreurs fréquentes."],
+          reperes: ["Analyser les termes du sujet", "Faire un brouillon", "Formuler une problématique", "Construire un plan logique", "Relire avant de rendre"],
+          notions: ["Problématique", "Plan", "Argumentation", "Contextualisation", "Paraphrase"],
+          idees: ["La méthode est une source directe de points.", "Une copie claire vaut mieux qu’une copie confuse.", "La dissertation et le commentaire reposent sur des attentes précises."],
+          sujets: ["Comment construire une problématique ?", "Comment éviter la paraphrase ?", "Qu’attend un correcteur de L1 ?"]
+        },
+        detail: {
+          lead: "Cours détaillé de méthodologie pour consolider les acquis universitaires et réussir les examens du second semestre.",
+          parts: [
+            {title:"I. Lire et comprendre le sujet", paragraphs:["Toute épreuve écrite commence par une lecture précise du sujet. Il faut identifier les termes importants, la période, l’espace, les notions et le type d’exercice demandé.","Un bon devoir ne commence jamais par une rédaction immédiate. Il commence par une analyse."]},
+            {title:"II. La problématique comme fil directeur", paragraphs:["La problématique donne une direction à la copie. Elle ne doit pas simplement reformuler le sujet, mais montrer l’enjeu intellectuel de la question posée.","Sans problématique claire, le devoir devient souvent descriptif ou hors sujet."]},
+            {title:"III. Construire un plan efficace", paragraphs:["Le plan organise la démonstration. Il doit être logique, progressif, équilibré et lisible.","En première année, un plan simple mais bien tenu est préférable à une construction artificielle ou trop ambitieuse."], bullets:["Toujours relier les parties à la problématique","Éviter les titres vagues","Prévoir des transitions courtes et utiles"]},
+            {title:"IV. La dissertation", paragraphs:["L’introduction doit poser le cadre du sujet, définir les termes, faire apparaître la problématique et annoncer le plan.","Le développement doit articuler idées, exemples et démonstration. La conclusion doit répondre clairement à la question sans ouvrir un nouveau développement."]},
+            {title:"V. Le commentaire de document", paragraphs:["Le commentaire commence par une présentation rigoureuse du document : nature, auteur, date, contexte, portée.","Il faut ensuite analyser le contenu, le vocabulaire, les intentions et les limites. La paraphrase est l’erreur la plus fréquente : elle consiste à redire le document sans l’expliquer."]},
+            {title:"VI. Gestion du temps et attentes du correcteur", paragraphs:["Le brouillon est indispensable, mais il doit rester maîtrisé dans le temps. Quelques minutes au début pour construire la copie, quelques minutes à la fin pour relire : cette discipline améliore fortement le résultat.","Le correcteur attend avant tout une copie claire, structurée, pertinente et rigoureuse. En L1, la solidité méthodologique fait souvent la différence."]}
+          ],
+          savoirFaire: ["Faire un plan en peu de temps.", "Présenter un document correctement.", "Rédiger une introduction claire et une conclusion efficace."]
+        }
+      }
+    };
+
+    const state = { selectedSubjectId:"contemporaine", currentTab:"sheets", sheetMode:"synth", quizQuestions:[], currentIndex:0, score:0, reviewMode:false, awaitingNext:false, shuffled:false };
+    const $ = id => document.getElementById(id);
+    const STORAGE_SCORES = 'quiz-histoire-s2-scores';
+
+    function getScores(){ try{return JSON.parse(localStorage.getItem(STORAGE_SCORES) || '{}')}catch(e){return {}} }
+    function saveScores(scores){ localStorage.setItem(STORAGE_SCORES, JSON.stringify(scores)); }
+    function currentSubject(){ return DATA.subjects.find(s => s.id === state.selectedSubjectId) || DATA.subjects[0]; }
+
+    function renderSubjects(){
+      const box = $('subjectChips');
+      box.innerHTML = '';
+      DATA.subjects.forEach(s => {
+        const btn = document.createElement('button');
+        btn.className = 'chip' + (s.id === state.selectedSubjectId ? ' active' : '');
+        btn.innerHTML = `<span>${s.name}</span>`;
+        btn.onclick = () => {
+          state.selectedSubjectId = s.id;
+          renderSubjects();
+          updateStats();
+          if(state.currentTab === 'sheets') renderSheet();
+        };
+        box.appendChild(btn);
+      });
+    }
+
+    function updateStats(){
+      const subject = currentSubject();
+      const scores = getScores();
+      const result = scores[subject.id] || {best:0,last:0,plays:0};
+      $('questionsCount').textContent = subject.questions.length;
+      $('bestScore').textContent = `${Math.round(result.best || 0)}%`;
+      $('lastScore').textContent = `${Math.round(result.last || 0)}%`;
+      renderResults();
+    }
+
+    function renderResults(){
+      const list = $('resultsList');
+      const scores = getScores();
+      list.innerHTML = '';
+      DATA.subjects.forEach(s => {
+        const r = scores[s.id] || {best:0,last:0,plays:0};
+        const div = document.createElement('div');
+        div.className = 'item';
+        div.innerHTML = `<div><strong>${s.name}</strong><small>${s.questions.length} questions · ${r.plays || 0} essai(s)</small></div><div><strong>${Math.round(r.best || 0)}%</strong></div>`;
+        list.appendChild(div);
+      });
+    }
+
+    function setTab(tab){
+      state.currentTab = tab;
+      $('tabSheets').classList.toggle('active', tab === 'sheets');
+      $('tabQuiz').classList.toggle('active', tab === 'quiz');
+      $('sheetControls').classList.toggle('hidden', tab !== 'sheets');
+      $('quizControls').classList.toggle('hidden', tab !== 'quiz');
+      $('sheetView').classList.toggle('active', tab === 'sheets');
+      $('quizWrap').classList.toggle('active', tab === 'quiz');
+      if(tab === 'sheets') renderSheet();
+      if(tab === 'quiz') $('quizWrap').classList.remove('active');
+    }
+
+    function renderList(title, arr){
+      return `<div class="sheetBlock"><h4>${title}</h4><ul>${(arr||[]).map(v => `<li>${v}</li>`).join('')}</ul></div>`;
+    }
+
+    function renderSheet(){
+      const subject = currentSubject();
+      const sheet = SHEETS[subject.id][state.sheetMode];
+      $('sheetTitleTop').textContent = subject.name;
+      $('sheetModeBadge').textContent = state.sheetMode === 'synth' ? 'Synthétique' : 'Détaillée';
+
+      if(state.sheetMode === 'synth'){
+        $('sheetContent').innerHTML = `
+          <h3>${subject.name}</h3>
+          <p class="sheetLead">${sheet.lead}</p>
+          <div class="badgeRow">
+            <span class="badge">Révision rapide</span>
+            <span class="badge">Essentiel à retenir</span>
+          </div>
+          <div class="sheetBlocks" style="margin-top:14px">
+            ${renderList('Objectifs', sheet.objectifs)}
+            <div class="sheetGrid">
+              ${renderList('Repères', sheet.reperes)}
+              ${renderList('Notions clés', sheet.notions)}
+            </div>
+            ${renderList('Idées essentielles', sheet.idees)}
+            ${renderList('Sujets probables', sheet.sujets)}
+          </div>
+        `;
+      } else {
+        const partsHtml = sheet.parts.map(part => `
+          <div class="coursePart">
+            <h4>${part.title}</h4>
+            ${(part.paragraphs||[]).map(p => `<p>${p}</p>`).join('')}
+            ${part.bullets ? `<ul>${part.bullets.map(b => `<li>${b}</li>`).join('')}</ul>` : ``}
+          </div>
+        `).join('');
+        $('sheetContent').innerHTML = `
+          <h3>${subject.name}</h3>
+          <p class="sheetLead">${sheet.lead}</p>
+          <div class="badgeRow">
+            <span class="badge">Cours détaillé</span>
+            <span class="badge">Pour comprendre le semestre</span>
+          </div>
+          <div class="sheetBlocks" style="margin-top:14px">
+            ${partsHtml}
+            ${renderList('Savoir-faire attendus', sheet.savoirFaire)}
+          </div>
+        `;
+      }
+    }
+
+    function shuffleArray(arr){
+      const a = [...arr];
+      for(let i=a.length-1;i>0;i--){
+        const j=Math.floor(Math.random()*(i+1));
+        [a[i],a[j]]=[a[j],a[i]];
+      }
+      return a;
+    }
+
+    function startQuiz(reviewMode=false){
+      setTab('quiz');
+      const subject = currentSubject();
+      state.reviewMode = reviewMode;
+      state.currentIndex = 0;
+      state.score = 0;
+      state.awaitingNext = false;
+      state.quizQuestions = state.shuffled ? shuffleArray(subject.questions) : [...subject.questions];
+      $('quizWrap').classList.add('active');
+      renderQuestion();
+    }
+
+    function renderQuestion(){
+      const q = state.quizQuestions[state.currentIndex];
+      if(!q){ finishQuiz(); return; }
+      $('progressText').textContent = `Question ${state.currentIndex + 1}/${state.quizQuestions.length}`;
+      $('progressBar').style.width = `${(state.currentIndex / state.quizQuestions.length) * 100}%`;
+      $('questionMeta').textContent = `${currentSubject().name} · ${q.chapter || 'Cours'} · ${q.difficulty || 'niveau libre'}`;
+      $('questionText').textContent = q.question;
+      $('explain').style.display = 'none';
+      $('explain').textContent = q.explanation || '';
+      $('nextBtn').classList.add('hidden');
+      const answers = $('answers');
+      answers.innerHTML = '';
+      (q.answers || []).forEach((answer, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'answer';
+        btn.textContent = answer;
+        btn.onclick = () => chooseAnswer(idx, btn);
+        answers.appendChild(btn);
+      });
+    }
+
+    function chooseAnswer(index, clickedBtn){
+      if(state.awaitingNext) return;
+      state.awaitingNext = true;
+      const q = state.quizQuestions[state.currentIndex];
+      const buttons = [...document.querySelectorAll('.answer')];
+      buttons.forEach((b,i) => {
+        b.disabled = true;
+        if(i === q.correctIndex) b.classList.add('correct');
+      });
+      if(index !== q.correctIndex) clickedBtn.classList.add('wrong');
+      else state.score++;
+      if(state.reviewMode || q.explanation) $('explain').style.display = 'block';
+      $('nextBtn').classList.remove('hidden');
+    }
+
+    function nextQuestion(){
+      state.currentIndex++;
+      state.awaitingNext = false;
+      $('progressBar').style.width = `${(state.currentIndex / state.quizQuestions.length) * 100}%`;
+      renderQuestion();
+    }
+
+    function finishQuiz(){
+      const total = state.quizQuestions.length || 1;
+      const percent = Math.round((state.score / total) * 100);
+      const subject = currentSubject();
+      const scores = getScores();
+      const prev = scores[subject.id] || {best:0,last:0,plays:0};
+      scores[subject.id] = {best: Math.max(prev.best || 0, percent), last: percent, plays: (prev.plays || 0) + 1};
+      saveScores(scores);
+      updateStats();
+      $('progressText').textContent = 'Terminé';
+      $('questionMeta').textContent = subject.name;
+      $('questionText').textContent = `Score final : ${state.score}/${total} · ${percent}%`;
+      $('answers').innerHTML = '';
+      $('explain').style.display = 'block';
+      $('explain').textContent = percent >= 80 ? 'Très bon niveau.' : 'Reprends d’abord la fiche détaillée, puis la fiche synthétique, puis recommence le quiz.';
+      $('nextBtn').classList.add('hidden');
+      $('progressBar').style.width = '100%';
+    }
+
+    function quitQuiz(){
+      setTab('sheets');
+      renderSheet();
+    }
+
+    $('tabSheets').onclick = () => setTab('sheets');
+    $('tabQuiz').onclick = () => setTab('quiz');
+    $('openSynthBtn').onclick = () => { state.sheetMode = 'synth'; setTab('sheets'); renderSheet(); };
+    $('openDetailBtn').onclick = () => { state.sheetMode = 'detail'; setTab('sheets'); renderSheet(); };
+    $('startBtn').onclick = () => startQuiz(false);
+    $('reviewBtn').onclick = () => startQuiz(true);
+    $('shuffleBtn').onclick = () => {
+      state.shuffled = !state.shuffled;
+      $('shuffleBtn').textContent = state.shuffled ? 'Mélange activé' : 'Mélanger questions';
+      $('shuffleBtn').classList.toggle('primary', state.shuffled);
+      $('shuffleBtn').classList.toggle('secondary', !state.shuffled);
+    };
+    $('nextBtn').onclick = nextQuestion;
+    $('quitBtn').onclick = quitQuiz;
+
+    renderSubjects();
+    updateStats();
+    renderSheet();
+  </script>
+</body>
+</html>
